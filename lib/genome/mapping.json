@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "base": 40,
+  "maxTraitBonusPerGene": 30,
+  "fallback": "Unknown trait values get a small deterministic delta derived from keccak256(type:value), so real collection metadata always decodes the same way.",
+  "rare": {
+    "Hair": "Halo",
+    "Eyes": "Glitch",
+    "Mouth": "Fangs",
+    "Outfit": "Armor",
+    "Accessory": "Crown",
+    "Background": "Void"
+  },
+  "traits": {
+    "Hair": {
+      "Spiky": { "mischief": 10, "speed": 4 },
+      "Fluffy": { "charm": 10, "wit": 2 },
+      "Mohawk": { "nerve": 10, "mischief": 4 },
+      "Slick": { "wit": 10, "charm": 3 },
+      "Wild": { "speed": 10, "mischief": 3 },
+      "Halo": { "charm": 9, "wit": 8, "nerve": 4 }
+    },
+    "Eyes": {
+      "Wide": { "wit": 8 },
+      "Sleepy": { "charm": 6, "nerve": 4 },
+      "Wink": { "charm": 9, "mischief": 4 },
+      "Laser": { "nerve": 10, "speed": 4 },
+      "Sparkle": { "charm": 8, "wit": 4 },
+      "Glitch": { "wit": 10, "mischief": 6, "speed": 4 }
+    },
+    "Mouth": {
+      "Grin": { "mischief": 9, "charm": 3 },
+      "Tongue": { "mischief": 7, "speed": 5 },
+      "Smirk": { "wit": 9, "mischief": 3 },
+      "Flat": { "nerve": 9, "wit": 3 },
+      "Open": { "speed": 9, "charm": 3 },
+      "Fangs": { "nerve": 8, "mischief": 8, "speed": 4 }
+    },
+    "Outfit": {
+      "Hoodie": { "nerve": 6, "wit": 5 },
+      "Cape": { "charm": 6, "nerve": 5 },
+      "Tracksuit": { "speed": 9, "nerve": 2 },
+      "Tux": { "charm": 9, "wit": 4 },
+      "Overalls": { "speed": 4, "mischief": 6 },
+      "Armor": { "nerve": 12, "charm": 4, "speed": -4 }
+    },
+    "Accessory": {
+      "None": {},
+      "Shades": { "charm": 7, "nerve": 4 },
+      "Mask": { "mischief": 10, "speed": 3 },
+      "Headphones": { "wit": 7, "speed": 4 },
+      "Bandana": { "nerve": 6, "speed": 6 },
+      "Crown": { "charm": 10, "nerve": 6 }
+    },
+    "Background": {
+      "Meadow": { "speed": 3, "charm": 3 },
+      "Dusk": { "wit": 3, "nerve": 3 },
+      "Neon": { "mischief": 5 },
+      "Static": { "speed": 5 },
+      "Void": { "mischief": 4, "wit": 4, "nerve": 3 }
+    }
+  }
+}
