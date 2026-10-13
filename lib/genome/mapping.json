@@ -1,63 +1,1658 @@
 {
-  "version": 1,
-  "base": 40,
-  "maxTraitBonusPerGene": 30,
-  "fallback": "Unknown trait values get a small deterministic delta derived from keccak256(type:value), so real collection metadata always decodes the same way.",
-  "rare": {
-    "Hair": "Halo",
-    "Eyes": "Glitch",
-    "Mouth": "Fangs",
-    "Outfit": "Armor",
-    "Accessory": "Crown",
-    "Background": "Void"
+ "version": 2,
+ "source": "Chog Genesis, 0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763 (Monad, 1,969 tokens)",
+ "base": 40,
+ "maxTraitBonusPerGene": 30,
+ "fallback": "A trait value not in this table decodes through a small deterministic delta from keccak256(type:value), so future metadata still works.",
+ "categories": {
+  "Aura": {
+   "genes": [
+    "charm",
+    "wit",
+    "mischief"
+   ],
+   "weight": 16
   },
-  "traits": {
-    "Hair": {
-      "Spiky": { "mischief": 10, "speed": 4 },
-      "Fluffy": { "charm": 10, "wit": 2 },
-      "Mohawk": { "nerve": 10, "mischief": 4 },
-      "Slick": { "wit": 10, "charm": 3 },
-      "Wild": { "speed": 10, "mischief": 3 },
-      "Halo": { "charm": 9, "wit": 8, "nerve": 4 }
-    },
-    "Eyes": {
-      "Wide": { "wit": 8 },
-      "Sleepy": { "charm": 6, "nerve": 4 },
-      "Wink": { "charm": 9, "mischief": 4 },
-      "Laser": { "nerve": 10, "speed": 4 },
-      "Sparkle": { "charm": 8, "wit": 4 },
-      "Glitch": { "wit": 10, "mischief": 6, "speed": 4 }
-    },
-    "Mouth": {
-      "Grin": { "mischief": 9, "charm": 3 },
-      "Tongue": { "mischief": 7, "speed": 5 },
-      "Smirk": { "wit": 9, "mischief": 3 },
-      "Flat": { "nerve": 9, "wit": 3 },
-      "Open": { "speed": 9, "charm": 3 },
-      "Fangs": { "nerve": 8, "mischief": 8, "speed": 4 }
-    },
-    "Outfit": {
-      "Hoodie": { "nerve": 6, "wit": 5 },
-      "Cape": { "charm": 6, "nerve": 5 },
-      "Tracksuit": { "speed": 9, "nerve": 2 },
-      "Tux": { "charm": 9, "wit": 4 },
-      "Overalls": { "speed": 4, "mischief": 6 },
-      "Armor": { "nerve": 12, "charm": 4, "speed": -4 }
-    },
-    "Accessory": {
-      "None": {},
-      "Shades": { "charm": 7, "nerve": 4 },
-      "Mask": { "mischief": 10, "speed": 3 },
-      "Headphones": { "wit": 7, "speed": 4 },
-      "Bandana": { "nerve": 6, "speed": 6 },
-      "Crown": { "charm": 10, "nerve": 6 }
-    },
-    "Background": {
-      "Meadow": { "speed": 3, "charm": 3 },
-      "Dusk": { "wit": 3, "nerve": 3 },
-      "Neon": { "mischief": 5 },
-      "Static": { "speed": 5 },
-      "Void": { "mischief": 4, "wit": 4, "nerve": 3 }
-    }
+  "Eyes": {
+   "genes": [
+    "wit",
+    "charm",
+    "mischief"
+   ],
+   "weight": 16
+  },
+  "Mouth": {
+   "genes": [
+    "mischief",
+    "charm",
+    "wit"
+   ],
+   "weight": 16
+  },
+  "Body": {
+   "genes": [
+    "speed",
+    "nerve"
+   ],
+   "weight": 16
+  },
+  "Base": {
+   "genes": [
+    "speed",
+    "nerve"
+   ],
+   "weight": 12
+  },
+  "Form": {
+   "genes": [
+    "nerve",
+    "speed",
+    "mischief"
+   ],
+   "weight": 14
+  },
+  "Head": {
+   "genes": [
+    "nerve",
+    "wit",
+    "mischief"
+   ],
+   "weight": 16
+  },
+  "Tier": {
+   "genes": [
+    "mischief",
+    "nerve",
+    "wit",
+    "speed",
+    "charm"
+   ],
+   "weight": 10
+  },
+  "Accessory": {
+   "genes": "tie-break (hash)",
+   "weight": 8
+  },
+  "Background": {
+   "genes": "tie-break (hash)",
+   "weight": 3
+  },
+  "Skin": {
+   "genes": "tie-break (hash)",
+   "weight": 3
+  },
+  "Naked": {
+   "genes": "tie-break (hash)",
+   "weight": 3
+  },
+  "Side": {
+   "genes": "tie-break (hash)",
+   "weight": 3
   }
+ },
+ "rare": {
+  "Background": [
+   "Afternoon Orange",
+   "Aqua Blue",
+   "Blood Red",
+   "Bright Yellow",
+   "Deep Purple",
+   "Gold",
+   "Magenta",
+   "Noble Blue",
+   "Red Sky",
+   "Rose Pink",
+   "Royal Blue",
+   "Supreme Purple"
+  ],
+  "Base": [],
+  "Skin": [
+   "Beige",
+   "Green",
+   "Grey",
+   "Jade",
+   "Metal",
+   "Multi Colored",
+   "Purple"
+  ],
+  "Side": [],
+  "Body": [
+   "Blue Holed Jacket",
+   "Blue Mafia",
+   "Boner",
+   "CEO Vest",
+   "Cyan Shirt",
+   "Gojo",
+   "Jesus Robe",
+   "Mummy",
+   "Orange Holed Jacket",
+   "Peach Hoodie",
+   "Purple Tank",
+   "Stripe Shirt",
+   "Stripe shirts",
+   "White Tank",
+   "Wizard Cape"
+  ],
+  "Mouth": [],
+  "Eyes": [
+   "Blue Flat",
+   "Blue Happy",
+   "Blue Retard",
+   "Blue Round Eye",
+   "Blue Smirk",
+   "Green Happy",
+   "Green Retard",
+   "Green Round Eye",
+   "Green Side Eye",
+   "Green Smirk",
+   "Mixed Happy",
+   "Mixed Retard",
+   "Mixed Round Eye",
+   "Mixed Side Eye",
+   "Normal",
+   "Red Flat",
+   "Red Retard",
+   "Red Round Eye",
+   "Up"
+  ],
+  "Head": [
+   "3rd Eye",
+   "8 Ball Beanie",
+   "BOOB Cap",
+   "Blue Laser",
+   "Demon Horn",
+   "Diamond",
+   "ETH Cap",
+   "Gold Thorn",
+   "Head Wrap",
+   "Holy Seal",
+   "Jeet Cap",
+   "Mafia Hat",
+   "Peace Cap",
+   "Poison Shroom",
+   "Purple Horn",
+   "Red Bandana",
+   "Red Horn",
+   "Silver Thorn",
+   "Silver wreath",
+   "Taped Banana",
+   "Void Horn",
+   "devil horn"
+  ],
+  "Accessory": [],
+  "Form": [],
+  "Tier": [],
+  "Naked": [],
+  "Aura": [
+   "Electric Shock",
+   "Pink Mist",
+   "Royal Blue",
+   "White Aura"
+  ]
+ },
+ "traits": {
+  "Background": {
+   "Afternoon Orange": {
+    "nerve": 1,
+    "speed": 1
+   },
+   "Aqua Blue": {
+    "charm": 2,
+    "speed": 1
+   },
+   "Aqua Mint": {},
+   "Aqua": {
+    "mischief": 1,
+    "charm": 1
+   },
+   "Blood Red": {
+    "charm": 1,
+    "mischief": 1
+   },
+   "Bright Yellow": {
+    "nerve": 1,
+    "wit": 1
+   },
+   "Coral Pink": {
+    "speed": 1,
+    "mischief": 1
+   },
+   "Deep Aqua": {},
+   "Deep Blue": {
+    "nerve": 1
+   },
+   "Deep Purple": {
+    "nerve": 2,
+    "speed": 2
+   },
+   "Fresh Green": {
+    "wit": 2,
+    "charm": 1
+   },
+   "Gold": {
+    "nerve": 1,
+    "charm": 1
+   },
+   "Lemon Yellow": {},
+   "Lemon": {},
+   "Light Magenta": {},
+   "Light Purple": {
+    "wit": 1,
+    "mischief": 1
+   },
+   "Lime Green": {},
+   "Magenta": {
+    "charm": 3,
+    "wit": 2
+   },
+   "Mint": {
+    "mischief": 2,
+    "wit": 1
+   },
+   "Mon": {
+    "speed": 1,
+    "nerve": 1
+   },
+   "Noble Blue": {
+    "wit": 3,
+    "speed": 2
+   },
+   "Peach Pink": {},
+   "Radioactive": {
+    "charm": 2,
+    "nerve": 1
+   },
+   "Red Sky": {
+    "wit": 3,
+    "speed": 2
+   },
+   "Rose Pink": {
+    "mischief": 2,
+    "wit": 1
+   },
+   "Rosie": {
+    "wit": 2,
+    "charm": 1
+   },
+   "Rosy Pink": {
+    "wit": 1,
+    "speed": 1
+   },
+   "Royal Blue": {},
+   "Sky Blue": {},
+   "Soft Lavender": {
+    "mischief": 1,
+    "wit": 1
+   },
+   "Sunlight": {
+    "nerve": 1,
+    "speed": 1
+   },
+   "Supreme Purple": {
+    "nerve": 2,
+    "mischief": 1
+   }
+  },
+  "Base": {
+   "1:1": {
+    "speed": 14,
+    "nerve": 14,
+    "mischief": 14,
+    "wit": 14,
+    "charm": 14
+   },
+   "Origin": {
+    "speed": 4,
+    "nerve": 3
+   },
+   "Radioactive": {
+    "speed": 7,
+    "nerve": 5
+   },
+   "Skull": {
+    "speed": 8,
+    "nerve": 5
+   }
+  },
+  "Skin": {
+   "Beige": {
+    "charm": 1,
+    "mischief": 1
+   },
+   "Black": {
+    "speed": 1,
+    "charm": 1
+   },
+   "Blue": {
+    "wit": 1,
+    "nerve": 1
+   },
+   "Green": {},
+   "Grey": {
+    "mischief": 2,
+    "nerve": 1
+   },
+   "Jade": {
+    "wit": 1,
+    "speed": 1
+   },
+   "Metal": {
+    "wit": 1
+   },
+   "Multi Colored": {},
+   "Origin": {
+    "nerve": 1
+   },
+   "Pink": {
+    "wit": 2,
+    "nerve": 1
+   },
+   "Purple": {
+    "mischief": 3,
+    "charm": 2
+   },
+   "Red": {
+    "nerve": 1,
+    "speed": 1
+   },
+   "White": {
+    "nerve": 2,
+    "mischief": 2
+   },
+   "Yellow": {
+    "charm": 2,
+    "mischief": 1
+   }
+  },
+  "Side": {
+   "Left": {
+    "wit": 1,
+    "nerve": 1
+   },
+   "Right": {}
+  },
+  "Body": {
+   "Aqua Tuxedo": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Army Vest": {
+    "speed": 11,
+    "nerve": 11
+   },
+   "Astro Suit": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "BBC": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Banana suit": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Black Shirt": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "Black Trackset": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "Black Vest": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Blue 143 Jersey": {
+    "speed": 7,
+    "nerve": 7
+   },
+   "Blue Chinese": {
+    "speed": 3,
+    "nerve": 3
+   },
+   "Blue Holed Jacket": {
+    "speed": 9,
+    "nerve": 9
+   },
+   "Blue Homeless Shirt": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "Blue Mafia": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "Blue Sleeveless": {
+    "speed": 11,
+    "nerve": 11
+   },
+   "Blue jacket": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Blue tuxedo": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "Boner": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Brown Homeless Shirt": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "CEO Vest": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "CWO": {
+    "speed": 9,
+    "nerve": 9
+   },
+   "Chug Life": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "Cream Tuxedo": {
+    "speed": 7,
+    "nerve": 7
+   },
+   "Cyan Shirt": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "Cyan tuxedo": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "Dragon suit": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Duck Float": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "Electro Hoodie": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "Farmer Shirt": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "Fire Shirt": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "Gangster suit": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "Glitch Hoodie": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "Gojo": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "Golden Armor": {
+    "speed": 10,
+    "nerve": 10
+   },
+   "Grey Homeless Shirt": {
+    "speed": 11,
+    "nerve": 11
+   },
+   "Grey Shirt": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "Guko": {
+    "speed": 3,
+    "nerve": 3
+   },
+   "Hawaiian Polo": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Inmate": {
+    "speed": 7,
+    "nerve": 7
+   },
+   "Jesus Robe": {
+    "speed": 9,
+    "nerve": 9
+   },
+   "Jesus": {
+    "speed": 7,
+    "nerve": 7
+   },
+   "Kings Robe": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "MILF Lover": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Mon Hoodie": {
+    "speed": 9,
+    "nerve": 9
+   },
+   "Mummy": {
+    "speed": 9,
+    "nerve": 9
+   },
+   "Orange Holed Jacket": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "Orange Hoodie": {
+    "speed": 10,
+    "nerve": 10
+   },
+   "Orange Sleeveless": {
+    "speed": 3,
+    "nerve": 3
+   },
+   "Peach Hoodie": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "Pink Shirt": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "Pink Tuxedo": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "Prisoner": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "Purple Shirt": {
+    "speed": 11,
+    "nerve": 11
+   },
+   "Purple Tank": {
+    "speed": 3,
+    "nerve": 3
+   },
+   "Red 143 Jersey": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Red Chinese": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "Red Sleeveless": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "Red Trackset": {
+    "speed": 9,
+    "nerve": 9
+   },
+   "Red Tuxedo": {
+    "speed": 10,
+    "nerve": 10
+   },
+   "Red jacket": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "Red shirt": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Sci Fi": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "Shark Suit": {
+    "speed": 3,
+    "nerve": 3
+   },
+   "Six Seven": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "Sky Hoodie": {
+    "speed": 7,
+    "nerve": 7
+   },
+   "Squid Game Guard": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "Squid Game": {
+    "speed": 7,
+    "nerve": 7
+   },
+   "Stripe Shirt": {
+    "speed": 10,
+    "nerve": 10
+   },
+   "Stripe shirts": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "Stripes": {
+    "speed": 3,
+    "nerve": 3
+   },
+   "Tank Top": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "Toad green Suit": {
+    "speed": 9,
+    "nerve": 9
+   },
+   "Toad pink suit": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "Tuxedo": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Virgin": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "White Pure Shirt": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "White Shirt": {
+    "speed": 2,
+    "nerve": 2
+   },
+   "White Sleeveless": {
+    "speed": 9,
+    "nerve": 9
+   },
+   "White Tank": {
+    "speed": 7,
+    "nerve": 7
+   },
+   "White Yukata": {
+    "speed": 7,
+    "nerve": 7
+   },
+   "White tuxedo": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "Wizard Cape": {
+    "speed": 12,
+    "nerve": 12
+   },
+   "Wizard": {
+    "speed": 3,
+    "nerve": 3
+   },
+   "Yellow 143 Jersey": {
+    "speed": 10,
+    "nerve": 10
+   },
+   "Yellow Hoodie": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "Yellow Shirt": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "Yellow Yukata": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "Zero THOTS": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "blue tee": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "dark jacket": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "dark tee": {
+    "speed": 8,
+    "nerve": 8
+   },
+   "dark vest": {
+    "speed": 5,
+    "nerve": 5
+   },
+   "pink vest": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "purple vest": {
+    "speed": 11,
+    "nerve": 11
+   },
+   "red tee": {
+    "speed": 4,
+    "nerve": 4
+   },
+   "toad blue suit": {
+    "speed": 6,
+    "nerve": 6
+   },
+   "white tee": {
+    "speed": 7,
+    "nerve": 7
+   }
+  },
+  "Mouth": {
+   "BTC Coin": {
+    "mischief": 7,
+    "charm": 4,
+    "wit": 3
+   },
+   "Bubblegum": {
+    "mischief": 7,
+    "charm": 4,
+    "wit": 3
+   },
+   "Clown Mouth": {
+    "mischief": 5,
+    "charm": 3,
+    "wit": 2
+   },
+   "Drooling": {
+    "mischief": 5,
+    "charm": 3,
+    "wit": 2
+   },
+   "Flat": {
+    "mischief": 5,
+    "charm": 3,
+    "wit": 2
+   },
+   "Gold Tooth": {
+    "mischief": 6,
+    "charm": 4,
+    "wit": 3
+   },
+   "Grit": {
+    "mischief": 9,
+    "charm": 6,
+    "wit": 4
+   },
+   "Lip Bite": {
+    "mischief": 1,
+    "charm": 1,
+    "wit": 1
+   },
+   "Mon coin": {
+    "mischief": 2,
+    "charm": 1,
+    "wit": 1
+   },
+   "Rainbow Puke": {
+    "mischief": 6,
+    "charm": 4,
+    "wit": 2
+   },
+   "Sad": {
+    "mischief": 5,
+    "charm": 3,
+    "wit": 2
+   },
+   "Smile": {
+    "mischief": 8,
+    "charm": 5,
+    "wit": 3
+   },
+   "Worried": {
+    "mischief": 4,
+    "charm": 3,
+    "wit": 2
+   },
+   "normal smile": {
+    "mischief": 5,
+    "charm": 3,
+    "wit": 2
+   },
+   "wo": {
+    "mischief": 3,
+    "charm": 2,
+    "wit": 1
+   }
+  },
+  "Eyes": {
+   "3D Glass": {
+    "wit": 1,
+    "charm": 1
+   },
+   "Angry": {
+    "wit": 2,
+    "charm": 1,
+    "mischief": 1
+   },
+   "Anime Glass": {
+    "wit": 2,
+    "charm": 1,
+    "mischief": 1
+   },
+   "BTC Glass": {
+    "wit": 4,
+    "charm": 3,
+    "mischief": 2
+   },
+   "Base": {
+    "wit": 5,
+    "charm": 3,
+    "mischief": 2
+   },
+   "Blue Flat": {
+    "wit": 3,
+    "charm": 2,
+    "mischief": 1
+   },
+   "Blue Happy": {
+    "wit": 12,
+    "charm": 7,
+    "mischief": 5
+   },
+   "Blue Retard": {
+    "wit": 11,
+    "charm": 6,
+    "mischief": 4
+   },
+   "Blue Round Eye": {
+    "wit": 4,
+    "charm": 2,
+    "mischief": 2
+   },
+   "Blue Smirk": {
+    "wit": 5,
+    "charm": 3,
+    "mischief": 2
+   },
+   "Chog Viper": {
+    "wit": 7,
+    "charm": 4,
+    "mischief": 3
+   },
+   "Classic VR": {
+    "wit": 5,
+    "charm": 3,
+    "mischief": 2
+   },
+   "Closed Eye Crying": {
+    "wit": 7,
+    "charm": 4,
+    "mischief": 3
+   },
+   "Clown Eye Mix": {
+    "wit": 5,
+    "charm": 3,
+    "mischief": 2
+   },
+   "Clown Eye": {
+    "wit": 2,
+    "charm": 1,
+    "mischief": 1
+   },
+   "Dead": {
+    "wit": 4,
+    "charm": 3,
+    "mischief": 2
+   },
+   "Flat": {
+    "wit": 8,
+    "charm": 5,
+    "mischief": 3
+   },
+   "Frog": {
+    "wit": 2,
+    "charm": 1,
+    "mischief": 1
+   },
+   "Gradient visor": {
+    "wit": 4,
+    "charm": 3,
+    "mischief": 2
+   },
+   "Green Happy": {
+    "wit": 2,
+    "charm": 1,
+    "mischief": 1
+   },
+   "Green Retard": {
+    "wit": 12,
+    "charm": 7,
+    "mischief": 5
+   },
+   "Green Round Eye": {
+    "wit": 7,
+    "charm": 4,
+    "mischief": 3
+   },
+   "Green Side Eye": {
+    "wit": 10,
+    "charm": 6,
+    "mischief": 4
+   },
+   "Green Smirk": {
+    "wit": 7,
+    "charm": 4,
+    "mischief": 3
+   },
+   "Green laser": {
+    "wit": 3,
+    "charm": 2,
+    "mischief": 1
+   },
+   "Happy": {
+    "wit": 7,
+    "charm": 4,
+    "mischief": 3
+   },
+   "Heart": {
+    "wit": 5,
+    "charm": 3,
+    "mischief": 2
+   },
+   "MOG": {
+    "wit": 4,
+    "charm": 3,
+    "mischief": 2
+   },
+   "Mixed Happy": {
+    "wit": 10,
+    "charm": 6,
+    "mischief": 4
+   },
+   "Mixed Retard": {
+    "wit": 9,
+    "charm": 6,
+    "mischief": 4
+   },
+   "Mixed Round Eye": {
+    "wit": 8,
+    "charm": 5,
+    "mischief": 3
+   },
+   "Mixed Side Eye": {
+    "wit": 11,
+    "charm": 6,
+    "mischief": 4
+   },
+   "Modern VR": {
+    "wit": 4,
+    "charm": 2,
+    "mischief": 2
+   },
+   "Normal Eye": {
+    "wit": 6,
+    "charm": 4,
+    "mischief": 2
+   },
+   "Normal": {
+    "wit": 3,
+    "charm": 2,
+    "mischief": 1
+   },
+   "Plasma visor": {
+    "wit": 4,
+    "charm": 2,
+    "mischief": 1
+   },
+   "Purple laser": {
+    "wit": 8,
+    "charm": 5,
+    "mischief": 3
+   },
+   "Red Flat": {
+    "wit": 13,
+    "charm": 8,
+    "mischief": 5
+   },
+   "Red Retard": {
+    "wit": 3,
+    "charm": 2,
+    "mischief": 1
+   },
+   "Red Round Eye": {
+    "wit": 8,
+    "charm": 5,
+    "mischief": 3
+   },
+   "Retard": {
+    "wit": 2,
+    "charm": 1,
+    "mischief": 1
+   },
+   "Retro Glass": {
+    "wit": 7,
+    "charm": 4,
+    "mischief": 3
+   },
+   "Round Crying": {
+    "wit": 3,
+    "charm": 2,
+    "mischief": 1
+   },
+   "Round Eye": {
+    "wit": 3,
+    "charm": 2,
+    "mischief": 1
+   },
+   "Round Tear": {
+    "wit": 7,
+    "charm": 4,
+    "mischief": 3
+   },
+   "Round": {
+    "wit": 9,
+    "charm": 5,
+    "mischief": 3
+   },
+   "Side Eye": {
+    "wit": 6,
+    "charm": 3,
+    "mischief": 2
+   },
+   "Smirk": {
+    "wit": 1,
+    "charm": 1,
+    "mischief": 1
+   },
+   "Sunset visor": {
+    "wit": 7,
+    "charm": 4,
+    "mischief": 3
+   },
+   "Teary": {
+    "wit": 7,
+    "charm": 4,
+    "mischief": 3
+   },
+   "Thug": {
+    "wit": 6,
+    "charm": 4,
+    "mischief": 3
+   },
+   "Tired": {
+    "wit": 5,
+    "charm": 3,
+    "mischief": 2
+   },
+   "Up": {
+    "wit": 8,
+    "charm": 5,
+    "mischief": 3
+   },
+   "Vertical": {
+    "wit": 8,
+    "charm": 5,
+    "mischief": 3
+   },
+   "Worried": {
+    "wit": 11,
+    "charm": 6,
+    "mischief": 4
+   },
+   "XD": {
+    "wit": 4,
+    "charm": 2,
+    "mischief": 2
+   },
+   "cyan laser": {
+    "wit": 6,
+    "charm": 3,
+    "mischief": 2
+   },
+   "fire laser": {
+    "wit": 7,
+    "charm": 4,
+    "mischief": 3
+   }
+  },
+  "Head": {
+   "10k TPS Cap": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "3rd Eye": {
+    "nerve": 9,
+    "wit": 9,
+    "mischief": 5
+   },
+   "8 Ball Beanie": {
+    "nerve": 5,
+    "wit": 5,
+    "mischief": 2
+   },
+   "BOOB Cap": {
+    "nerve": 8,
+    "wit": 8,
+    "mischief": 4
+   },
+   "BTC Beanie": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "BTC Cap": {
+    "nerve": 6,
+    "wit": 6,
+    "mischief": 3
+   },
+   "Balls Cap": {
+    "nerve": 3,
+    "wit": 3,
+    "mischief": 2
+   },
+   "Blue Bucket Cap": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Blue Laser": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Bob Hair": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Boob Cap": {
+    "nerve": 4,
+    "wit": 4,
+    "mischief": 2
+   },
+   "Buttcoin Cap": {
+    "nerve": 5,
+    "wit": 5,
+    "mischief": 2
+   },
+   "Chog Cap": {
+    "nerve": 8,
+    "wit": 8,
+    "mischief": 4
+   },
+   "Choggie Beanie": {
+    "nerve": 6,
+    "wit": 6,
+    "mischief": 3
+   },
+   "Choggie Cap": {
+    "nerve": 7,
+    "wit": 7,
+    "mischief": 3
+   },
+   "Cloud Cap": {
+    "nerve": 1,
+    "wit": 1
+   },
+   "Clown Nose": {
+    "nerve": 3,
+    "wit": 3,
+    "mischief": 1
+   },
+   "Crown": {
+    "nerve": 7,
+    "wit": 7,
+    "mischief": 3
+   },
+   "Demon Horn": {
+    "nerve": 6,
+    "wit": 6,
+    "mischief": 3
+   },
+   "Diamond": {
+    "nerve": 7,
+    "wit": 7,
+    "mischief": 3
+   },
+   "Dollar Cap": {
+    "nerve": 3,
+    "wit": 3,
+    "mischief": 2
+   },
+   "Durag": {
+    "nerve": 1,
+    "wit": 1,
+    "mischief": 1
+   },
+   "ETH Cap": {
+    "nerve": 3,
+    "wit": 3,
+    "mischief": 1
+   },
+   "Gold Thorn": {
+    "nerve": 7,
+    "wit": 7,
+    "mischief": 3
+   },
+   "Gray Bucket Cap": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Head Wrap": {
+    "nerve": 4,
+    "wit": 4,
+    "mischief": 2
+   },
+   "Holy Seal": {
+    "nerve": 4,
+    "wit": 4,
+    "mischief": 2
+   },
+   "Horny Cap": {
+    "nerve": 6,
+    "wit": 6,
+    "mischief": 3
+   },
+   "JEET Cap": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Japan Headband": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Jeet Cap": {
+    "nerve": 5,
+    "wit": 5,
+    "mischief": 2
+   },
+   "MCGA Cap": {
+    "nerve": 5,
+    "wit": 5,
+    "mischief": 3
+   },
+   "MCGA": {
+    "nerve": 5,
+    "wit": 5,
+    "mischief": 2
+   },
+   "MEGA Chog": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "MMGA Cap": {
+    "nerve": 1,
+    "wit": 1,
+    "mischief": 1
+   },
+   "Mafia Hat": {
+    "nerve": 5,
+    "wit": 5,
+    "mischief": 2
+   },
+   "Mon Beanie": {
+    "nerve": 4,
+    "wit": 4,
+    "mischief": 2
+   },
+   "Mon Cap": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "NEET": {
+    "nerve": 3,
+    "wit": 3,
+    "mischief": 2
+   },
+   "Orange Bucket Cap": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Peace Cap": {
+    "nerve": 11,
+    "wit": 11,
+    "mischief": 5
+   },
+   "Peace hat": {
+    "nerve": 8,
+    "wit": 8,
+    "mischief": 4
+   },
+   "Plumber": {
+    "nerve": 5,
+    "wit": 5,
+    "mischief": 2
+   },
+   "Poison Shroom": {
+    "nerve": 6,
+    "wit": 6,
+    "mischief": 3
+   },
+   "Purple Horn": {
+    "nerve": 10,
+    "wit": 10,
+    "mischief": 5
+   },
+   "RETARD Cap": {
+    "nerve": 4,
+    "wit": 4,
+    "mischief": 2
+   },
+   "RH Beanie": {
+    "nerve": 7,
+    "wit": 7,
+    "mischief": 3
+   },
+   "Rainbow Wig": {
+    "nerve": 3,
+    "wit": 3,
+    "mischief": 1
+   },
+   "Red Bandana": {
+    "nerve": 11,
+    "wit": 11,
+    "mischief": 5
+   },
+   "Red Headband": {
+    "nerve": 4,
+    "wit": 4,
+    "mischief": 2
+   },
+   "Red Horn": {
+    "nerve": 7,
+    "wit": 7,
+    "mischief": 4
+   },
+   "Red Peace Cap": {
+    "nerve": 1,
+    "wit": 1,
+    "mischief": 1
+   },
+   "Robber": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Russian Hat": {
+    "nerve": 6,
+    "wit": 6,
+    "mischief": 3
+   },
+   "Silver Thorn": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Silver wreath": {
+    "nerve": 8,
+    "wit": 8,
+    "mischief": 4
+   },
+   "Spartan Helmet": {
+    "nerve": 7,
+    "wit": 7,
+    "mischief": 4
+   },
+   "Star Cap": {
+    "nerve": 5,
+    "wit": 5,
+    "mischief": 2
+   },
+   "TISM Cap": {
+    "nerve": 4,
+    "wit": 4,
+    "mischief": 2
+   },
+   "Taped Banana": {
+    "nerve": 8,
+    "wit": 8,
+    "mischief": 4
+   },
+   "Thunder Cap": {
+    "nerve": 2,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Void Horn": {
+    "nerve": 11,
+    "wit": 11,
+    "mischief": 5
+   },
+   "WAGMI Cap": {
+    "nerve": 1,
+    "wit": 1,
+    "mischief": 1
+   },
+   "Wizard Beanie": {
+    "nerve": 5,
+    "wit": 5,
+    "mischief": 3
+   },
+   "Wizard Hat": {
+    "nerve": 4,
+    "wit": 4,
+    "mischief": 2
+   },
+   "devil horn": {
+    "nerve": 7,
+    "wit": 7,
+    "mischief": 4
+   }
+  },
+  "Accessory": {
+   "Cigar": {
+    "speed": 1
+   },
+   "Coin": {
+    "speed": 5,
+    "wit": 4
+   },
+   "Fwog": {
+    "nerve": 2,
+    "charm": 1
+   },
+   "Green Candle": {
+    "wit": 4,
+    "mischief": 3
+   },
+   "Heart": {
+    "speed": 1,
+    "wit": 1
+   },
+   "Knife": {
+    "speed": 2,
+    "nerve": 1
+   },
+   "PEPE": {
+    "wit": 5,
+    "charm": 3
+   },
+   "Red Candle": {
+    "wit": 1,
+    "charm": 1
+   },
+   "SB": {
+    "charm": 3,
+    "mischief": 2
+   }
+  },
+  "Form": {
+   "Chog": {
+    "nerve": 2,
+    "speed": 1,
+    "mischief": 1
+   },
+   "Skull": {
+    "nerve": 4,
+    "speed": 3,
+    "mischief": 2
+   }
+  },
+  "Tier": {
+   "Common": {},
+   "Epic": {
+    "mischief": 5,
+    "nerve": 5,
+    "wit": 5,
+    "speed": 5,
+    "charm": 5
+   },
+   "Legendary": {
+    "mischief": 8,
+    "nerve": 8,
+    "wit": 8,
+    "speed": 8,
+    "charm": 8
+   },
+   "Rare": {
+    "mischief": 2,
+    "nerve": 2,
+    "wit": 2,
+    "speed": 2,
+    "charm": 2
+   },
+   "Uncommon": {
+    "mischief": 1,
+    "nerve": 1,
+    "wit": 1,
+    "speed": 1,
+    "charm": 1
+   }
+  },
+  "Naked": {
+   "No": {},
+   "Yes": {
+    "wit": 1
+   }
+  },
+  "Aura": {
+   "Aqua Aura": {
+    "charm": 5,
+    "wit": 3,
+    "mischief": 2
+   },
+   "Burning Aura": {
+    "charm": 4,
+    "wit": 2,
+    "mischief": 1
+   },
+   "Clean": {
+    "charm": 2,
+    "wit": 1,
+    "mischief": 1
+   },
+   "Cool Aura": {
+    "charm": 7,
+    "wit": 4,
+    "mischief": 3
+   },
+   "Electric Shock": {
+    "charm": 2,
+    "wit": 1,
+    "mischief": 1
+   },
+   "Fiery Aura": {
+    "charm": 8,
+    "wit": 5,
+    "mischief": 3
+   },
+   "Fire": {
+    "charm": 2,
+    "wit": 1,
+    "mischief": 1
+   },
+   "Green Aura": {
+    "charm": 9,
+    "wit": 5,
+    "mischief": 3
+   },
+   "Light Purple": {
+    "charm": 5,
+    "wit": 3,
+    "mischief": 2
+   },
+   "Mint": {
+    "charm": 5,
+    "wit": 3,
+    "mischief": 2
+   },
+   "Pink Mist": {
+    "charm": 10,
+    "wit": 6,
+    "mischief": 4
+   },
+   "Purple": {
+    "charm": 6,
+    "wit": 4,
+    "mischief": 2
+   },
+   "Rose Aura": {
+    "charm": 5,
+    "wit": 3,
+    "mischief": 2
+   },
+   "Rose Scent": {
+    "charm": 11,
+    "wit": 6,
+    "mischief": 4
+   },
+   "Royal Aura": {
+    "charm": 6,
+    "wit": 4,
+    "mischief": 3
+   },
+   "Royal Blue Aura": {
+    "charm": 2,
+    "wit": 1,
+    "mischief": 1
+   },
+   "Royal Blue": {
+    "charm": 11,
+    "wit": 7,
+    "mischief": 4
+   },
+   "Smoke": {
+    "charm": 8,
+    "wit": 5,
+    "mischief": 3
+   },
+   "Violet": {
+    "charm": 3,
+    "wit": 2,
+    "mischief": 1
+   },
+   "White Aura": {
+    "charm": 4,
+    "wit": 2,
+    "mischief": 2
+   },
+   "Wind": {
+    "charm": 7,
+    "wit": 4,
+    "mischief": 3
+   },
+   "Yellow Aura": {
+    "charm": 7,
+    "wit": 4,
+    "mischief": 3
+   }
+  }
+ }
 }

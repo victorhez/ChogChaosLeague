@@ -1,60 +1,68 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageHead, Sprite } from "@/components/bits";
+import { ChogImage, PageHead } from "@/components/bits";
 import { chogName } from "@/lib/chog";
+import { COLLECTION_SIZE, CHOG_CONTRACT, LIVE_FROM_ROUND, isHistory } from "@/lib/config";
 import { loadLeague, recentRounds } from "@/lib/server/league";
 
 export const metadata: Metadata = { title: "Testing guide" };
 export const revalidate = 30;
 
-const DEMO = [1, 7, 12, 23, 31, 42];
+const SAMPLE = [1, 7, 541, 1049, 1557, 1969];
 
 export default async function TestGuide() {
   const { state, roster, nudges } = await loadLeague();
   const [r] = await recentRounds(state.latestClosed, 1, roster, nudges);
   const ev = r.events[0];
+  const live = state.liveRoundsClosed > 0;
   return (
     <div className="wrap prose" style={{ padding: "36px 0 72px", maxWidth: 900 }}>
       <PageHead eyebrow="For judges and testers" title="Test it in five minutes" />
-      <p>No wallet and no NFT are needed to watch, replay and verify. A wallet unlocks the daily nudge.</p>
+      <p>There are three ways in. Watching and replaying need no wallet. Playing (setting a nudge) needs a Chog Genesis token in the connected wallet; a wallet without one is told so and cannot nudge any Chog.</p>
+      <p className="muted">All {COLLECTION_SIZE.toLocaleString("en-US")} Chogs from <a href={`https://monadscan.com/address/${CHOG_CONTRACT}`} target="_blank" rel="noreferrer" style={{ textDecoration: "underline" }}>the Chog Genesis contract</a> play. Rounds before #{LIVE_FROM_ROUND} are replayed history (see the fairness page); {live ? `${state.liveRoundsClosed} live rounds have closed so far.` : "the first live round closes within the hour of launch."}</p>
 
-      <h2>Spectator path (no wallet)</h2>
+      <h2>1 · Spectator (no wallet)</h2>
       <ol>
-        <li>Open the <Link href="/arena" style={{ textDecoration: "underline" }}>Arena</Link>. Tap a Chog in the meadow to see its genes and traits.</li>
-        <li>Open any event in the feed, for example <Link href={`/event/${ev.eventId}`} style={{ textDecoration: "underline" }}>{ev.eventId}</Link>. Press <b>Replay</b>. The green banner confirms the browser reproduced the stored result.</li>
+        <li>Open the <Link href="/arena" style={{ textDecoration: "underline" }}>Arena</Link>. Tap a Chog in the meadow for its genes and traits.</li>
+        <li>Open an event, for example <Link href={`/event/${ev.eventId}`} style={{ textDecoration: "underline" }}>{ev.eventId}</Link>{isHistory(ev.roundId) ? " (replayed history)" : ""}. Press <b>Replay</b>. The green banner confirms your browser reproduced the stored result.</li>
         <li>On the same page press <b>Check seed against Monad RPC</b> to compare the stored seed with the live block hash.</li>
-        <li>Visit a Chog career page and look at the <b>Proof</b> column. Each season row verifies a Merkle proof in your browser.</li>
-        <li>Open the <Link href="/leaderboard" style={{ textDecoration: "underline" }}>Leaderboard</Link>, switch seasons, and open the top moment.</li>
-        <li>Share a highlight card to X from any event page.</li>
+        <li>Open any Chog page (links below) and check the <b>Proof</b> column. Each season row verifies a Merkle proof in your browser.</li>
+        <li>Open the <Link href="/leaderboard" style={{ textDecoration: "underline" }}>Leaderboard</Link>, switch seasons, open the top moment, and share a highlight card to X.</li>
       </ol>
 
-      <h2>Wallet path</h2>
+      <h2>2 · Sandbox (no wallet, no points)</h2>
+      <p>The <Link href="/sandbox" style={{ textDecoration: "underline" }}>Sandbox</Link> lets anyone pit two Chogs against each other with chosen stances and a seed word. It is practice only: nothing is stored, and it never touches the leaderboard, badges or prizes.</p>
+
+      <h2>3 · Holder (wallet with a Chog)</h2>
       <ol>
         <li>Open <Link href="/play" style={{ textDecoration: "underline" }}>My Chogs</Link> and press <b>Connect wallet</b>. The app switches your wallet to Monad (chain 143).</li>
-        <li>Until the collection address is configured, your wallet adopts three demo Chogs from its address. With the address set, Chogs you hold are read from the contract.</li>
-        <li>Check the genome breakdown, choose Bold, Sneaky or Friendly, and press <b>Sign and lock nudge</b>. Signing is free: it is a message signature, not a transaction.</li>
-        <li>Your nudge applies to rounds from the next unlocked round. Look for the &quot;nudged&quot; tag on later events.</li>
+        <li>Your Chogs appear with real art, read live from the contract. Check the genome breakdown.</li>
+        <li>Choose Bold, Sneaky or Friendly and press <b>Sign and lock nudge</b>. Signing is free (a message, not a transaction). The server verifies the signature and calls <code>ownerOf</code> on Monad before recording it.</li>
+        <li>Your nudge applies from the next unlocked round. Look for the &quot;nudged&quot; tag on later events of that Chog.</li>
       </ol>
 
-      <h2>Demo Chogs</h2>
+      <h2>4 · The delete-the-NFT test</h2>
+      <p>Connect a wallet that holds <b>no</b> Chog. <Link href="/play" style={{ textDecoration: "underline" }}>My Chogs</Link> says &quot;You need a Chog to play&quot; and offers spectating, the Sandbox, or finding a Chog. The nudge API rejects any signature from a wallet that is not the on-chain owner (covered by an automated test).</p>
+
+      <h2>Sample Chogs</h2>
       <div className="grid g3">
-        {DEMO.map((id) => (
-          <Link key={id} href={`/chog/${id}`} className="tile"><Sprite id={id} size={64} /><div><b>{chogName(id)}</b><small>token #{id}</small></div></Link>
+        {SAMPLE.map((id) => (
+          <Link key={id} href={`/chog/${id}`} className="tile"><ChogImage id={id} size={64} /><div><b>{chogName(id)}</b><small>token #{id}</small></div></Link>
         ))}
       </div>
-      <p className="muted" style={{ marginTop: 12 }}>Any token ID from 1 to 10000 works in spectator mode at <code>/chog/&lt;id&gt;</code>. IDs 1 to 48 play in the launch meadow.</p>
+      <p className="muted" style={{ marginTop: 12 }}>Valid token ids are 1 to {COLLECTION_SIZE}, at <code>/chog/&lt;id&gt;</code>. Names come from the metadata and their numbers can differ from the token id.</p>
 
       <h2>Run the checks locally</h2>
       <pre className="code">{`npm install
-npm test            # engine determinism, fairness bounds, replay, Merkle proofs
+npm test            # engine, fairness bounds, replay, Merkle proofs, real-trait coverage, nudge ownership
 npm run typecheck
-npm run dev`}</pre>
+npm run verify -- r168-e3   # re-run any event from public data`}</pre>
 
       <h2>What to expect</h2>
       <ul>
-        <li>A new round closes about every hour (9,000 Monad blocks). Pages refresh within seconds of a round closing.</li>
-        <li>If Monad's RPC is down, pages say so and rounds use a labelled fallback seed. The game never stops.</li>
-        <li>Status page: <Link href="/status" style={{ textDecoration: "underline" }}>/status</Link>.</li>
+        <li>A round closes about every hour (9,000 Monad blocks). Pages refresh within seconds of a round closing.</li>
+        <li>If Monad&apos;s RPC is down, pages say so and rounds use a labelled fallback seed. The game never stops.</li>
+        <li>Status: <Link href="/status" style={{ textDecoration: "underline" }}>/status</Link>.</li>
       </ul>
     </div>
   );

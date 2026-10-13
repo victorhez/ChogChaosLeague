@@ -43,7 +43,7 @@ export function betrayChance(c: Contender): number {
   return Math.min(0.85, Math.max(0.05, p));
 }
 
-export function runEvent(input: EngineInput): EngineResult {
+export function runEvent(input: EngineInput, opts?: { skipHash?: boolean }): EngineResult {
   const { type, seedHash, eventId, a, b } = input;
   const rng = makeRng(seedHash, eventId);
   const powerA = power(a, type);
@@ -106,6 +106,6 @@ export function runEvent(input: EngineInput): EngineResult {
 
   const highlight = upset || outcome === "photo-finish" || outcome === "betrayal" || outcome === "mutual-backstab";
   const core = { type, eventId, seedHash, a: [a.tokenId, a.stance], b: [b.tokenId, b.stance], log, winner, points, outcome };
-  const logHash = keccakHex(JSON.stringify(core));
+  const logHash = opts?.skipHash ? "" : keccakHex(JSON.stringify(core));
   return { winner, margin, totalA, totalB, powerA, powerB, points, upset, highlight, outcome, log, logHash };
 }

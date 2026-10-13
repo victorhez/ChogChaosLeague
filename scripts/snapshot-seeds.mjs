@@ -2,7 +2,7 @@
 // so this only saves RPC round trips. Anyone can regenerate it and diff: node scripts/snapshot-seeds.mjs
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 
-const ANCHOR = 109_500_000, BPR = 9_000, FINALITY = 200;
+const BPR = 9_000, FINALITY = 200, ANCHOR = 113_030_000 - 168 * BPR;
 const RPC = process.env.NEXT_PUBLIC_MONAD_RPC || "https://rpc.monad.xyz";
 const call = async (body) => (await fetch(RPC, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })).json();
 

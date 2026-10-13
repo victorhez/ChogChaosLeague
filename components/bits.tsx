@@ -8,6 +8,11 @@ export function Sprite({ id, size = 64, alt = "" }: { id: number; size?: number;
   return <img className="px" src={`/sprite/${id}.svg`} width={size} height={size} alt={alt} loading="lazy" decoding="async" />;
 }
 
+export function ChogImage({ id, size = 220, alt = "" }: { id: number; size?: number; alt?: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={`/api/img/${id}`} width={size} height={size} alt={alt} loading="lazy" decoding="async" style={{ borderRadius: 18, background: "var(--night-2)", objectFit: "cover", maxWidth: "100%", height: "auto", aspectRatio: "1" }} />;
+}
+
 export function GeneBars({ genome }: { genome: Genome }) {
   return (
     <div role="list" aria-label="Genes">

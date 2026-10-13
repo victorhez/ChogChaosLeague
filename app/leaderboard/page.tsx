@@ -20,13 +20,15 @@ export default async function Leaderboard({ searchParams }: { searchParams: Prom
 
   return (
     <div className="wrap" style={{ padding: "36px 0 72px" }}>
-      <PageHead eyebrow={`Season ${sid} · ${season.rounds} of ${ROUNDS_PER_SEASON} rounds${season.complete ? " · final" : " · live"}`} title="Leaderboard" />
+      <PageHead eyebrow={`Season ${sid} · ${season.rounds} of ${ROUNDS_PER_SEASON} rounds${season.history ? " · replayed history" : season.complete ? " · final" : " · live"}`} title="Leaderboard" />
       <nav aria-label="Seasons" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 22 }}>
         {Array.from({ length: state.season + 1 }, (_, s) => (
-          <Link key={s} href={`/leaderboard?season=${s}`} className={`btn btn-sm ${s === sid ? "btn-purple" : "btn-ghost"}`}>Season {s}{s === state.season ? " · live" : ""}</Link>
+          <Link key={s} href={`/leaderboard?season=${s}`} className={`btn btn-sm ${s === sid ? "btn-purple" : "btn-ghost"}`}>Season {s}{s === 0 ? " · replayed" : s === state.season ? " · live" : ""}</Link>
         ))}
       </nav>
 
+      {season.history && <div className="notice" style={{ marginBottom: 20 }}>Season 0 is <b>replayed history</b>: its rounds were computed from past Monad blocks before the league went live. No owner nudged them. Real nudges and careers start in season 1.</div>}
+      {season.rounds === 0 ? <div className="card"><h3>No rounds have closed in this season yet</h3><p className="muted" style={{ marginTop: 8 }}>The first live round closes about an hour after the season starts.</p></div> : <>
       <div className="grid g3" style={{ marginBottom: 24 }}>
         <div className="card card-hard">
           <div className="eyebrow">{season.complete ? "Champion" : "Leading"}</div>
@@ -67,6 +69,7 @@ export default async function Leaderboard({ searchParams }: { searchParams: Prom
         </table>
       </div>
       <p className="muted mono" style={{ marginTop: 14, fontSize: ".8rem" }}>Season root: {season.root}</p>
+      </>}
     </div>
   );
 }

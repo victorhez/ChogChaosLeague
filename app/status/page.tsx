@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { PageHead } from "@/components/bits";
-import { CHOG_CONTRACT, LEDGER_ADDRESS } from "@/lib/config";
+import { CHOG_CONTRACT, COLLECTION_SIZE, LEDGER_ADDRESS, LIVE_FROM_ROUND } from "@/lib/config";
 import { getHead, getRoster, getSeeds, leagueState } from "@/lib/server/league";
-import { nudgeStoreKind } from "@/lib/server/nudges";
+import { nudgeStoreHealth } from "@/lib/server/nudges";
 
 export const metadata: Metadata = { title: "Status" };
 export const dynamic = "force-dynamic";
@@ -13,14 +13,16 @@ export default async function Status() {
   const st = leagueState(head);
   const seed = (await getSeeds([st.latestClosed])).get(st.latestClosed)!;
   const roster = await getRoster();
+  const store = await nudgeStoreHealth();
   const rows: [string, string, boolean][] = [
     ["Monad RPC", head.ok ? `up · head block ${head.latest.toLocaleString("en-US")}` : "unreachable · running on fallback seeds", head.ok],
     ["Latest closed round", `${st.latestClosed} (season ${st.season})`, true],
     ["Last seed", `${seed.hash.slice(0, 18)}… · block ${seed.block.toLocaleString("en-US")} · ${seed.source}`, seed.source === "monad"],
     ["Next nudge lock", `${Math.round(st.secondsToLock / 60)} min`, true],
-    ["Roster", `${roster.length} Chogs · ${CHOG_CONTRACT ? "read from chain" : "demo traits"}`, true],
+    ["Roster", `${roster.length} of ${COLLECTION_SIZE} Chogs · read from the Chog Genesis metadata (${CHOG_CONTRACT.slice(0, 10)}…)`, roster.length === COLLECTION_SIZE],
+    ["League phase", st.latestClosed < LIVE_FROM_ROUND ? "replaying history · first live round pending" : `live · ${st.liveRoundsClosed} live rounds closed`, true],
     ["ChaosLedger", LEDGER_ADDRESS || "not deployed in this environment", Boolean(LEDGER_ADDRESS)],
-    ["Nudge store", nudgeStoreKind(), nudgeStoreKind().startsWith("durable")],
+    ["Nudge store", store.label, store.durable],
     ["Page latency", `${Date.now() - t0} ms`, true],
   ];
   return (

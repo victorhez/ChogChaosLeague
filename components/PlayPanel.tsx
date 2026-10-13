@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWallet } from "@/lib/wallet";
-import { demoChog, type Chog } from "@/lib/chog";
-import { fetchChog } from "@/lib/chain";
-import { GeneBars, Sprite } from "./bits";
+import { ChogImage, GeneBars, Sprite } from "./bits";
 import { STANCES, type Stance } from "@/lib/engine/types";
 import { STANCE_INFO, nudgeMessage } from "@/lib/nudge-shared";
 import { MAPPING_TABLE } from "@/lib/genome/genome";
+import { DEFAULT_CHOG_CONTRACT } from "@/lib/config";
 
 interface Win { fromRound: number; day: number; locksInSeconds: number; open: boolean }
 interface Nudge { stance: Stance }
@@ -21,9 +20,11 @@ function useCountdown(seconds: number | undefined) {
   return `${h}h ${String(m).padStart(2, "0")}m ${String(sec).padStart(2, "0")}s`;
 }
 
+const nonce = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join("");
+
 export function PlayPanel() {
   const w = useWallet();
-  const [chogs, setChogs] = useState<Chog[]>([]);
+  const chogs = w.myChogs;
   const [sel, setSel] = useState<number | null>(null);
   const [win, setWin] = useState<Win | null>(null);
   const [current, setCurrent] = useState<Nudge | null>(null);
@@ -32,16 +33,7 @@ export function PlayPanel() {
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const countdown = useCountdown(win?.locksInSeconds);
 
-  useEffect(() => {
-    let live = true;
-    (async () => {
-      const list = await Promise.all(w.myChogs.map((id) => (w.mode === "chain" ? fetchChog(id) : Promise.resolve(demoChog(id)))));
-      if (!live) return;
-      setChogs(list);
-      setSel((s) => s ?? list[0]?.tokenId ?? null);
-    })();
-    return () => { live = false; };
-  }, [w.myChogs, w.mode]);
+  useEffect(() => { if (chogs?.length) setSel((s) => s ?? chogs[0].tokenId); }, [chogs]);
 
   const refresh = useCallback(async () => {
     if (!sel) return;
@@ -50,14 +42,15 @@ export function PlayPanel() {
   }, [sel]);
   useEffect(() => { void refresh(); }, [refresh]);
 
-  const chog = useMemo(() => chogs.find((c) => c.tokenId === sel) ?? null, [chogs, sel]);
+  const chog = useMemo(() => chogs?.find((c) => c.tokenId === sel) ?? null, [chogs, sel]);
 
   async function submit() {
     if (!sel || !win || !w.address) return;
     setBusy(true); setMsg(null);
     try {
-      const signature = await w.sign(nudgeMessage(sel, win.day, pick));
-      const res = await fetch("/api/nudge", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tokenId: sel, stance: pick, owner: w.address, day: win.day, signature }) });
+      const issuedAt = Date.now(), n = nonce();
+      const signature = await w.sign(nudgeMessage(sel, win.day, pick, issuedAt, n));
+      const res = await fetch("/api/nudge", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tokenId: sel, stance: pick, owner: w.address, day: win.day, issuedAt, nonce: n, signature }) });
       const j = await res.json();
       if (!res.ok) setMsg({ ok: false, text: j.error ?? "Could not record the nudge." });
       else { setMsg({ ok: true, text: "Nudge signed and locked in for today." }); await refresh(); }
@@ -71,28 +64,41 @@ export function PlayPanel() {
       <div className="card card-hard" style={{ textAlign: "center", padding: 36 }}>
         <div style={{ display: "flex", justifyContent: "center", gap: 6 }}><Sprite id={3} size={84} /><Sprite id={11} size={84} /><Sprite id={29} size={84} /></div>
         <h2 style={{ margin: "14px 0 10px" }}>Step 1 · Connect</h2>
-        <p className="muted" style={{ maxWidth: 520, margin: "0 auto 20px" }}>
-          Connect a wallet on Monad to wake your Chog. {w.mode === "demo" ? "While the Chog collection address is being confirmed, your wallet adopts three demo Chogs so you can try the whole flow." : "Chogs held by your wallet appear as cards."}
+        <p className="muted" style={{ maxWidth: 540, margin: "0 auto 20px" }}>
+          Connect the wallet that holds your Chog on Monad. Your Chogs are read live from the Chog Genesis contract. Only the holder of a Chog can set its nudge.
         </p>
         <button className="btn btn-primary" onClick={w.connect} disabled={w.connecting}>{w.connecting ? "Connecting…" : "Connect wallet"}</button>
         {w.error && <p className="notice" style={{ marginTop: 16 }}>{w.error}</p>}
-        <p className="muted" style={{ marginTop: 22 }}>No wallet? <Link href="/arena" style={{ textDecoration: "underline" }}>Spectate the meadow</Link> or <Link href="/test-guide" style={{ textDecoration: "underline" }}>use the demo Chogs</Link>.</p>
+        <p className="muted" style={{ marginTop: 22 }}>No wallet or no Chog? <Link href="/arena" style={{ textDecoration: "underline" }}>Spectate the meadow</Link> or try the <Link href="/sandbox" style={{ textDecoration: "underline" }}>Sandbox</Link>.</p>
       </div>
     );
   }
 
+  if (chogs === null) return <div className="card"><h3>Reading your Chogs from Monad…</h3></div>;
+
   if (!chogs.length) {
-    return <div className="card"><h3>No Chog found</h3><p className="muted" style={{ marginTop: 8 }}>This wallet does not hold a Chog. You can still <Link href="/arena" style={{ textDecoration: "underline" }}>spectate</Link> any Chog by token ID.</p></div>;
+    return (
+      <div className="card card-hard">
+        <h3>You need a Chog to play</h3>
+        <p className="muted" style={{ margin: "8px 0 16px" }}>
+          {w.chainError ? "We could not read Monad just now, so we could not check this wallet. Try again in a moment." : `This wallet (${w.address.slice(0, 6)}…${w.address.slice(-4)}) does not hold a Chog Genesis token. Nudges are the Chog's key, so they stay with holders.`}
+        </p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <a className="btn btn-primary" href={`https://opensea.io/assets/monad/${DEFAULT_CHOG_CONTRACT}/1`} target="_blank" rel="noreferrer">Find a Chog on OpenSea</a>
+          <Link className="btn btn-ghost" href="/arena">Spectate the meadow</Link>
+          <Link className="btn btn-ghost" href="/sandbox">Try the Sandbox</Link>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="grid" style={{ gap: 22 }}>
-      {w.mode === "demo" && <div className="notice">Demo mode: your wallet adopted these Chogs deterministically from its address. Once the collection address is set, this list is read from the Chog contract on Monad.</div>}
       <div className="grid g3">
         {chogs.map((c) => (
           <button key={c.tokenId} className="tile" onClick={() => setSel(c.tokenId)} aria-pressed={sel === c.tokenId} style={{ cursor: "pointer", textAlign: "left", color: "inherit", borderColor: sel === c.tokenId ? "var(--orange)" : undefined, font: "inherit" }}>
-            <Sprite id={c.tokenId} size={64} alt="" />
-            <div><b>{c.name}</b><small>#{c.tokenId}</small></div>
+            <ChogImage id={c.tokenId} size={64} alt={c.name} />
+            <div><b>{c.name}</b><small>token #{c.tokenId}</small></div>
           </button>
         ))}
       </div>
@@ -116,7 +122,7 @@ export function PlayPanel() {
           <div className="card card-hard">
             <div className="eyebrow">Step 3 · Nudge</div>
             <h3 style={{ margin: "6px 0 6px" }}>Today&apos;s stance</h3>
-            <p className="muted">One nudge per Chog per day. It locks before the round and shifts the odds, never decides them.</p>
+            <p className="muted">One nudge per Chog per day. It locks before the round and shifts the odds, never decides them. The server checks on Monad that this wallet owns the token.</p>
             <p className="mono" style={{ margin: "12px 0", color: "var(--orange)" }}>{win?.open ? `Locks in ${countdown}` : "Round locked · counts from the next round"}</p>
 
             {current ? (

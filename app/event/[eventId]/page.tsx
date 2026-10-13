@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { EVENT_LABEL, OUTCOME_LABEL, Sprite } from "@/components/bits";
+import { ChogImage, EVENT_LABEL, OUTCOME_LABEL } from "@/components/bits";
+import { isHistory } from "@/lib/config";
 import { ReplayPanel } from "@/components/ReplayPanel";
 import { ShareButtons } from "@/components/ShareButtons";
 import { chogName } from "@/lib/chog";
@@ -29,15 +30,16 @@ export default async function EventPage({ params }: { params: Promise<{ eventId:
     <div className="wrap" style={{ padding: "36px 0 72px", maxWidth: 900 }}>
       <Link href="/arena" className="muted">← Arena</Link>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 18, margin: "22px 0 8px", flexWrap: "wrap" }}>
-        <Link href={`/chog/${e.a.tokenId}`} style={{ textAlign: "center" }}><Sprite id={e.a.tokenId} size={120} alt={a} /><div className="mono" style={{ fontSize: ".8rem" }}>#{e.a.tokenId} · {e.a.stance}{e.a.nudged ? " · nudged" : ""}</div></Link>
+        <Link href={`/chog/${e.a.tokenId}`} style={{ textAlign: "center" }}><ChogImage id={e.a.tokenId} size={140} alt={a} /><div className="mono" style={{ fontSize: ".8rem" }}>token #{e.a.tokenId} · {e.a.stance}{e.a.nudged ? " · nudged" : ""}</div></Link>
         <h1 style={{ fontSize: "3rem", color: "var(--orange)" }}>VS</h1>
-        <Link href={`/chog/${e.b.tokenId}`} style={{ textAlign: "center" }}><Sprite id={e.b.tokenId} size={120} alt={b} /><div className="mono" style={{ fontSize: ".8rem" }}>#{e.b.tokenId} · {e.b.stance}{e.b.nudged ? " · nudged" : ""}</div></Link>
+        <Link href={`/chog/${e.b.tokenId}`} style={{ textAlign: "center" }}><ChogImage id={e.b.tokenId} size={140} alt={b} /><div className="mono" style={{ fontSize: ".8rem" }}>token #{e.b.tokenId} · {e.b.stance}{e.b.nudged ? " · nudged" : ""}</div></Link>
       </div>
       <h2 style={{ textAlign: "center", fontSize: "clamp(1.5rem,4vw,2.4rem)" }}>{a} vs {b}</h2>
       <div style={{ display: "flex", gap: 8, justifyContent: "center", margin: "14px 0 26px", flexWrap: "wrap" }}>
         <span className="pill">{EVENT_LABEL[e.type]}</span>
         <span className={`pill ${e.result.highlight ? "pill-orange" : ""}`}>{OUTCOME_LABEL[e.result.outcome]}</span>
         <span className="pill">Round {e.roundId}</span>
+        {isHistory(e.roundId) && <span className="pill pill-muted" title="Computed from a past Monad block. No owner nudged this round.">Replayed history</span>}
       </div>
       <ReplayPanel
         data={{

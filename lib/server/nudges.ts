@@ -20,7 +20,18 @@ const HASH = "ccl:nudges";
 const g = globalThis as unknown as { __nudges?: NudgeBook };
 const mem = (g.__nudges ??= {});
 
-export const nudgeStoreKind = () => (REST_URL && REST_TOKEN ? "durable (Redis REST)" : "in-memory (demo)");
+export const nudgeStoreKind = () => (REST_URL && REST_TOKEN ? "Redis configured" : "in-memory (nudges can be lost on restart)");
+
+/** Truthful store status: "durable" only if Redis answers a PING right now. */
+export async function nudgeStoreHealth(): Promise<{ durable: boolean; label: string }> {
+  if (!(REST_URL && REST_TOKEN)) return { durable: false, label: "in-memory: nudges can be lost on restart (connect Redis for durability)" };
+  try {
+    const pong = await rest(["PING"]);
+    return pong === "PONG" ? { durable: true, label: "durable: Redis reachable" } : { durable: false, label: "Redis configured but returned an unexpected reply" };
+  } catch {
+    return { durable: false, label: "Redis configured but unreachable: falling back to memory" };
+  }
+}
 
 async function rest(cmd: (string | number)[]): Promise<unknown> {
   const res = await fetch(`${REST_URL}`, {

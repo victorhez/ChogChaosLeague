@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArenaLive } from "@/components/ArenaLive";
 import { EventRow, Sprite, EVENT_LABEL } from "@/components/bits";
 import { chogName } from "@/lib/chog";
+import { COLLECTION_SIZE, LIVE_FROM_ROUND, isHistory } from "@/lib/config";
 import { computeSeason, loadLeague, recentRounds } from "@/lib/server/league";
 import { drawerData, fmtDuration, toPairs } from "@/lib/server/view";
 
@@ -13,9 +14,9 @@ export default async function Home() {
   const rounds = await recentRounds(state.latestClosed, 3, roster, nudges);
   const season = await computeSeason(state.season, state.latestClosed, roster, nudges);
   const latest = rounds[0];
-  const feed = rounds.flatMap((r) => r.events).slice(0, 6);
+  const feed = latest.events.slice(0, 6);
   const hot = rounds.flatMap((r) => r.events).filter((e) => e.result.highlight).slice(0, 3);
-  const totalEvents = (state.latestClosed + 1) * (roster.length / 2);
+  const eventsPerRound = Math.floor(roster.length / 2);
   const ticker = rounds.flatMap((r) => r.events).slice(0, 12);
 
   return (
@@ -23,13 +24,13 @@ export default async function Home() {
       <section className="hero wrap">
         <div className="hero-grid">
           <div>
-            <div className="pill pill-mint" style={{ marginBottom: 20 }}><span className="dot" /> Live on Monad · round {latest.roundId}</div>
+            <div className="pill pill-mint" style={{ marginBottom: 20 }}><span className="dot" /> {isHistory(latest.roundId) ? "Replayed history" : "Live on Monad"} · round {latest.roundId}</div>
             <h1>
               Your Chog is not a picture.<br />
               It is a creature with a <span className="hl">career.</span>
             </h1>
             <p className="lead">
-              Every Chog becomes a mischievous pixel creature. Its traits are its genes. Each hour the meadow runs a round of pranks, duels, races and betrayals, seeded by a Monad block hash anyone can replay.
+              All {COLLECTION_SIZE.toLocaleString("en-US")} Chog Genesis NFTs are creatures in one meadow. The real traits of each Chog become its genes. Every hour the meadow runs a round of pranks, duels, races and betrayals, seeded by a Monad block hash anyone can replay.
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <Link href="/arena" className="btn btn-primary">Watch the meadow</Link>
@@ -55,20 +56,20 @@ export default async function Home() {
 
       <section className="section wrap">
         <div className="stats">
-          <div className="stat"><b>{latest.roundId}</b><span>Rounds played</span></div>
-          <div className="stat"><b>{totalEvents.toLocaleString("en-US")}</b><span>Chaos events, all replayable</span></div>
-          <div className="stat"><b>S{state.season}</b><span>Season · {season.rounds} / 168 rounds</span></div>
+          <div className="stat"><b>{state.liveRoundsClosed}</b><span>Live rounds closed since launch</span></div>
+          <div className="stat"><b>{(state.liveRoundsClosed * eventsPerRound).toLocaleString("en-US")}</b><span>Live events, all replayable</span></div>
+          <div className="stat"><b>S{state.season}</b><span>Season · {season.rounds} / 168 rounds{season.history ? " (replayed)" : ""}</span></div>
           <div className="stat"><b>{fmtDuration(state.secondsToLock)}</b><span>until next nudge lock</span></div>
         </div>
       </section>
 
       <section className="wrap" style={{ paddingBottom: 72 }}>
         <div className="sectionhead">
-          <div><div className="eyebrow">The meadow</div><h2 style={{ marginTop: 8 }}>Round {latest.roundId}, as it happened</h2></div>
+          <div><div className="eyebrow">The meadow</div><h2 style={{ marginTop: 8 }}>Round {latest.roundId}, as it happened</h2>{isHistory(latest.roundId) && <p className="muted" style={{ marginTop: 8 }}>This round was computed from a past Monad block. Rounds before #{LIVE_FROM_ROUND} are replayed history: no owner ever nudged them.</p>}</div>
           <Link href="/arena" className="btn btn-ghost btn-sm">Open full arena</Link>
         </div>
         <div className="layout-arena">
-          <ArenaLive pairs={toPairs(latest.events, roster)} chogs={drawerData(roster, season)} label={`Round ${latest.roundId}`} />
+          <ArenaLive pairs={toPairs(latest.events)} chogs={drawerData(toPairs(latest.events), season)} label={`Round ${latest.roundId}`} />
           <div className="feed" aria-label="Latest events">
             {feed.map((e) => <EventRow key={e.eventId} e={e} />)}
           </div>

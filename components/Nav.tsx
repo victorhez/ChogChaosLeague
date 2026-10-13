@@ -9,6 +9,7 @@ import { useWallet } from "@/lib/wallet";
 const LINKS = [
   { href: "/arena", label: "Arena" },
   { href: "/play", label: "My Chogs" },
+  { href: "/sandbox", label: "Sandbox" },
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/fairness", label: "Fairness" },
   { href: "/test-guide", label: "Test guide" },

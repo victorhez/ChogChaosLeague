@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getHead, leagueState, getSeeds, getRoster } from "@/lib/server/league";
-import { nudgeStoreKind } from "@/lib/server/nudges";
-import { CHOG_CONTRACT, LEDGER_ADDRESS } from "@/lib/config";
+import { nudgeStoreHealth } from "@/lib/server/nudges";
+import { CHOG_CONTRACT, LEDGER_ADDRESS, LIVE_FROM_ROUND } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +18,11 @@ export async function GET() {
     latestClosedRound: st.latestClosed,
     lastSeed: seed,
     rosterSize: roster.length,
-    rosterSource: CHOG_CONTRACT ? "chain" : "demo",
+    rosterSource: `Chog Genesis ${CHOG_CONTRACT}`,
+    liveFromRound: LIVE_FROM_ROUND,
+    liveRoundsClosed: st.liveRoundsClosed,
     ledger: LEDGER_ADDRESS || "not deployed",
-    nudgeStore: nudgeStoreKind(),
+    nudgeStore: await nudgeStoreHealth(),
     latencyMs: Date.now() - t0,
   });
 }

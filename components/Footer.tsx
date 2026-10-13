@@ -18,6 +18,7 @@ export function Footer() {
         </div>
         <div style={{ display: "grid", gap: 6 }}>
           <Link href="/test-guide">Testing guide</Link>
+          <Link href="/sandbox">Sandbox</Link>
           <a href={REPO_URL} target="_blank" rel="noreferrer">GitHub</a>
           <a href="https://chogathon.chog.xyz/" target="_blank" rel="noreferrer">Chogathon</a>
         </div>

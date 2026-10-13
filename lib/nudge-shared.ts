@@ -6,7 +6,10 @@ export const STANCE_INFO: Record<Stance, { label: string; blurb: string; beats: 
   friendly: { label: "Friendly", blurb: "+charm, calmer rolls", beats: "Charms Sneaky" },
 };
 
+/** Signatures older than this (or from the future) are rejected, so an old signature cannot be replayed. */
+export const NUDGE_MAX_AGE_MS = 10 * 60 * 1000;
+
 /** The exact text the owner signs. The server rebuilds it to verify the signature. */
-export function nudgeMessage(tokenId: number, day: number, stance: Stance): string {
-  return `Chog Chaos League nudge\nChog: #${tokenId}\nDay: ${day}\nStance: ${stance}`;
+export function nudgeMessage(tokenId: number, day: number, stance: Stance, issuedAt: number, nonce: string): string {
+  return `Chog Chaos League nudge\nChog token: #${tokenId}\nDay: ${day}\nStance: ${stance}\nIssued: ${new Date(issuedAt).toISOString()}\nNonce: ${nonce}`;
 }
