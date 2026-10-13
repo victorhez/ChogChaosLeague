@@ -149,7 +149,7 @@ Use a fresh wallet funded with a little MON. Then set `NEXT_PUBLIC_LEDGER_ADDRES
 
 ## Honest limits
 
-- **Ledger.** ChaosLedger is written and tested, but a season only shows **Verified on Monad** once the contract is deployed and the root is written. Until then profiles say the proof is valid and the root is not on chain yet.
+- **Ledger.** ChaosLedger is deployed on Monad at [`0xa379…5143`](https://monadscan.com/address/0xa37942e9963d7e036f2b9e6d15c1597541c05143) and season 0 (replayed history) is anchored: its root `0x2f388a7f…bb5be2` is on chain and profiles show **Verified on Monad**. Season 1 is anchored once its 168 live rounds close, and until then it shows "Season live · proof valid".
 - **Nudges.** Nudges are durable only when Redis is connected; the status page reports the live mode truthfully.
 - **Autopilot.** Chogs whose holders never nudge play on seeded autopilot stances. Holders change stance for a day; they do not control results.
 - **Metadata.** Traits and names come from the collection's cached IPFS metadata. The number in a name (for example CHOG #541) is not the token id.
