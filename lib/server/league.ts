@@ -205,7 +205,7 @@ const RES_BENCH = 0, RES_WIN = 1, RES_LOSS = 2, RES_DRAW = 3, FLAG_UPSET = 4, FL
 const aggMem = new Map<string, RoundAgg>();
 
 type HistoryRow = { p: string; r: string; b: [string, number, number] | null };
-const HISTORY = (history as { rounds: Record<string, HistoryRow> }).rounds;
+const HISTORY = (history as unknown as { rounds: Record<string, HistoryRow> }).rounds;
 
 /** Replayed-history rounds never had a nudge, so their aggregates are immutable and shipped precomputed. */
 function fromHistory(roundId: number, size: number): RoundAgg | null {

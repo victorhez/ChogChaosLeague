@@ -102,7 +102,7 @@ test("merkle proofs verify for every leaf and fail when tampered", () => {
 
 test("precomputed history matches a fresh recompute (rounds 0, 77, 167)", async () => {
   const roster = await getRoster();
-  const rows = (history as { rounds: Record<string, ReturnType<typeof encodeAgg>> }).rounds;
+  const rows = (history as unknown as { rounds: Record<string, ReturnType<typeof encodeAgg>> }).rounds;
   const seeds = await getSeeds([0, 77, 167]);
   process.env.CCL_NO_HISTORY = "1";
   try {
