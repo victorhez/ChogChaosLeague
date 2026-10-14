@@ -37,7 +37,7 @@ export function Nav() {
     <header className="nav">
       <div className="wrap nav-in">
         <Link href="/" className="brand" onClick={() => setOpen(false)}>
-          <img src="/api/img/7?w=128" alt="" width={38} height={38} style={{ borderRadius: 10, objectFit: "cover" }} />
+          <img src="/chogs/7.webp" alt="" width={38} height={38} style={{ borderRadius: 10, objectFit: "cover" }} />
           <span>Chog Chaos<br />League</span>
         </Link>
         <button className="btn btn-ghost btn-sm nav-toggle" aria-expanded={open} aria-label="Menu" onClick={() => setOpen(!open)}>

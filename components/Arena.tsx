@@ -61,7 +61,7 @@ function realArt(id: number): HTMLImageElement | null {
   if (!img) {
     img = new Image();
     img.crossOrigin = "anonymous";
-    img.src = `/api/img/${id}?w=128`;
+    img.src = `/chogs/${id}.webp`;
     artCache.set(id, img);
   }
   return img.complete && img.naturalWidth > 0 ? img : null;
