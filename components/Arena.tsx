@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Genome } from "@/lib/engine/types";
 import type { EventType, Winner } from "@/lib/engine/types";
 import { spriteCells, SPRITE_H, SPRITE_W } from "@/lib/sprite";
-import { chogName } from "@/lib/chog";
+import { auraColor, chogName } from "@/lib/chog";
 
 export interface ArenaPair {
   eventId: string;
@@ -16,7 +16,7 @@ export interface ArenaPair {
   b: { tokenId: number; genome: Genome; traits: Record<string, string> };
 }
 
-const W = 480, H = 270, S = 2, SZ = SPRITE_W * S;
+const W = 480, H = 270, S = 2, SZ = 46;
 const BUBBLE: Record<EventType, string> = { "prank-heist": "PRANK!", "meme-duel": "ROAST!", "meadow-race": "GO GO!", "alliance-betrayal": "DEAL?" };
 const PERIOD = 10;
 
@@ -52,6 +52,34 @@ function meadow(): HTMLCanvasElement {
   for (let x = 6; x < W; x += 14) g.fillRect(x, 6, 4, 12);
   g.fillRect(0, 10, W, 3);
   return c;
+}
+
+/** Real Chog art (thumbnails of the NFT images), loaded lazily; the pixel creature shows while one loads. */
+const artCache = new Map<number, HTMLImageElement>();
+function realArt(id: number): HTMLImageElement | null {
+  let img = artCache.get(id);
+  if (!img) {
+    img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = `/api/img/${id}?w=128`;
+    artCache.set(id, img);
+  }
+  return img.complete && img.naturalWidth > 0 ? img : null;
+}
+
+function drawArt(g: CanvasRenderingContext2D, who: ArenaPair["a"], x: number, y: number, hovered: boolean) {
+  const art = realArt(who.tokenId);
+  const r = 8;
+  g.save();
+  g.beginPath();
+  g.roundRect(x, y, SZ, SZ, r);
+  g.clip();
+  if (art) g.drawImage(art, x, y, SZ, SZ);
+  else { g.fillStyle = "#231846"; g.fillRect(x, y, SZ, SZ); g.imageSmoothingEnabled = false; g.drawImage(spriteCanvas(who), x + 3, y + 3, SZ - 6, SZ - 6); }
+  g.restore();
+  g.lineWidth = 3;
+  g.strokeStyle = hovered ? "#ffffff" : auraColor(who.genome);
+  g.beginPath(); g.roundRect(x, y, SZ, SZ, r); g.stroke();
 }
 
 const spriteCache = new Map<string, HTMLCanvasElement>();
@@ -105,15 +133,12 @@ export function Arena({ pairs, label, onSelect }: { pairs: ArenaPair[]; label: s
             x += -side * 18 * (1 - k);
             if (won) dy = -Math.abs(Math.sin(k * Math.PI * 3)) * 10;
           }
-          const sc = spriteCanvas(who);
           g.save();
           g.globalAlpha = lost && local >= 0.8 ? 0.72 : 1;
-          g.fillStyle = "rgba(0,0,0,0.25)"; g.fillRect(x + 6, y + SZ - 2, SZ - 12, 4);
-          const flip = side === 1;
-          if (flip) { g.translate(x + SZ, y + dy); g.scale(-1, 1); g.drawImage(sc, 0, 0, SZ, SZ); } else g.drawImage(sc, x, y + dy, SZ, SZ);
+          g.fillStyle = "rgba(0,0,0,0.25)"; g.fillRect(x + 6, y + dy + SZ - 1, SZ - 12, 5);
+          drawArt(g, who, x, y + dy, hover.current === who.tokenId);
           g.restore();
-          spots.current.push({ id: who.tokenId, x: x + SZ / 2, y: y + SZ / 2 });
-          if (hover.current === who.tokenId) { g.strokeStyle = "#fff"; g.lineWidth = 2; g.strokeRect(x - 1, y + dy - 1, SZ + 2, SZ + 2); }
+          spots.current.push({ id: who.tokenId, x: x + SZ / 2, y: y + dy + SZ / 2 });
           return { x, y: y + dy, phaseBubble };
         };
         const A = place(-1, p.a, p.winner === "a", p.winner === "b");

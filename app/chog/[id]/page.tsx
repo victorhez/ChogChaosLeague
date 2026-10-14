@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChogImage, EventRow, GeneBars, Sprite } from "@/components/bits";
+import { ChogImage, EventRow, GeneBars, PixelSprite } from "@/components/bits";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { isRare, traitDelta } from "@/lib/genome/genome";
 import { CHAIN, CHOG_CONTRACT, COLLECTION_SIZE } from "@/lib/config";
@@ -47,7 +47,7 @@ export default async function ChogPage({ params }: { params: Promise<{ id: strin
           <p className="muted" style={{ marginBottom: 4 }}>Dominant gene: <b style={{ color: "var(--cloud)", textTransform: "capitalize" }}>{dom}</b></p>
           <p className="muted mono" style={{ fontSize: ".78rem", marginBottom: 14 }}>The number in the name comes from metadata and can differ from the token id.</p>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 14 }}>
-            <Sprite id={tokenId} size={48} alt="Arena avatar" /><span className="muted">Arena avatar</span>
+            <PixelSprite id={tokenId} size={48} alt="Pixel avatar" /><span className="muted">Pixel avatar (in-arena style)</span>
           </div>
           <div style={{ textAlign: "left" }}><GeneBars genome={chog.genome} /></div>
           <a className="muted" style={{ textDecoration: "underline", fontSize: ".85rem", display: "inline-block", marginTop: 12 }} href={`${CHAIN.explorer}/token/${CHOG_CONTRACT}?a=${tokenId}`} target="_blank" rel="noreferrer">View token on Monadscan</a>
