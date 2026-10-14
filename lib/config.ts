@@ -33,3 +33,8 @@ export const dayOf = (r: number) => Math.floor(r / ROUNDS_PER_DAY);
 export const isHistory = (r: number) => r < LIVE_FROM_ROUND;
 /** Index of the newest round whose seed block is final at head `latest`. */
 export const lastClosedRound = (latest: number) => Math.floor((latest - FINALITY_BLOCKS - ANCHOR_BLOCK) / BLOCKS_PER_ROUND);
+
+/** Transactions that wrote each season root to ChaosLedger on Monad, so a Verified badge can link to the proof of anchoring. */
+export const ANCHOR_TXS: Record<number, string> = {
+  0: "0x7915194a0a68213e3433f90650fa991df27c244a977fda9fdf4635bd2249f546",
+};
