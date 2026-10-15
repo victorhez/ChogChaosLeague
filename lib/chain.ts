@@ -66,3 +66,15 @@ export async function onchainRoot(seasonId: number): Promise<`0x${string}` | nul
     return null;
   }
 }
+
+const rootMemo = new Map<number, `0x${string}`>();
+
+/** Server-side root lookup: anchored roots never change, so they are cached; a slow RPC never blocks the page for long. */
+export async function onchainRootForRender(seasonId: number): Promise<`0x${string}` | null | undefined> {
+  if (!LEDGER_ADDRESS) return null;
+  const hit = rootMemo.get(seasonId);
+  if (hit) return hit;
+  const r = await Promise.race([onchainRoot(seasonId), new Promise<undefined>((res) => setTimeout(() => res(undefined), 2500))]);
+  if (r && !/^0x0+$/.test(r)) rootMemo.set(seasonId, r);
+  return r === null ? undefined : r; // undefined = could not tell (timeout or RPC error); the browser will check
+}

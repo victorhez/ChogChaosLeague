@@ -6,6 +6,7 @@ import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { isRare, traitDelta } from "@/lib/genome/genome";
 import { CHAIN, CHOG_CONTRACT, COLLECTION_SIZE } from "@/lib/config";
 import { dominantGene } from "@/lib/chog";
+import { onchainRootForRender } from "@/lib/chain";
 import { careerProof, computeSeason, loadLeague, tokenEvents } from "@/lib/server/league";
 import { getChog, validTokenId } from "@/lib/server/chogs";
 
@@ -29,10 +30,11 @@ export default async function ChogPage({ params }: { params: Promise<{ id: strin
 
   const seasons = await Promise.all(Array.from({ length: state.season + 1 }, (_, s) => computeSeason(s, state.latestClosed, roster, nudges)));
   const events = await tokenEvents(tokenId, state.season, state.latestClosed, roster, nudges);
+  const chainRoots = await Promise.all(seasons.map((x) => onchainRootForRender(x.seasonId)));
   const lastLoss = events.find((e) => (e.a.tokenId === tokenId ? e.result.winner === "b" : e.result.winner === "a"));
   const rivalId = lastLoss ? (lastLoss.a.tokenId === tokenId ? lastLoss.b.tokenId : lastLoss.a.tokenId) : null;
   const career = seasons
-    .map((s) => ({ s, row: s.standings.find((x) => x.tokenId === tokenId)!, proof: careerProof(s, tokenId)! }))
+    .map((s, i) => ({ s, row: s.standings.find((x) => x.tokenId === tokenId)!, proof: careerProof(s, tokenId)!, chainRoot: chainRoots[i] }))
     .filter((c) => c.s.rounds > 0)
     .reverse();
   const dom = dominantGene(chog.genome);
@@ -84,12 +86,12 @@ export default async function ChogPage({ params }: { params: Promise<{ id: strin
                 <table>
                   <thead><tr><th>Season</th><th>Rank / {COLLECTION_SIZE}</th><th>Pts</th><th>W-L</th><th>Best streak</th><th>Badges</th><th>Proof</th></tr></thead>
                   <tbody>
-                    {career.map(({ s, row, proof }) => (
+                    {career.map(({ s, row, proof, chainRoot }) => (
                       <tr key={s.seasonId}>
                         <td>S{s.seasonId}{s.history ? " · replayed history" : s.complete ? "" : " · live"}</td>
                         <td>#{row.rank}</td><td>{row.points}</td><td>{row.wins}-{row.losses}</td><td>{row.bestStreak}</td>
                         <td>{row.badges.length ? row.badges.map((b) => <span key={b} className="pill pill-orange" style={{ marginRight: 4 }}>{b}</span>) : <span className="muted">none yet</span>}</td>
-                        <td><VerifiedBadge leaf={proof.leaf} proof={proof.proof} root={proof.root} complete={s.complete} /></td>
+                        <td><VerifiedBadge leaf={proof.leaf} proof={proof.proof} root={proof.root} complete={s.complete} chainRoot={chainRoot} /></td>
                       </tr>
                     ))}
                   </tbody>

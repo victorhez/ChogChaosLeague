@@ -44,6 +44,24 @@ export default async function TestGuide() {
       <h2>4 · The delete-the-NFT test</h2>
       <p>Connect a wallet that holds <b>no</b> Chog. <Link href="/play" style={{ textDecoration: "underline" }}>My Chogs</Link> says &quot;You need a Chog to play&quot; and offers spectating, the Sandbox, or finding a Chog. The nudge API rejects any signature from a wallet that is not the on-chain owner (covered by an automated test).</p>
 
+      <h2>Wallet paths and how each was tested</h2>
+      <div className="tbl-wrap">
+        <table>
+          <thead><tr><th>Path</th><th>Expected result</th><th>How it is checked</th></tr></thead>
+          <tbody>
+            <tr><td>Holder nudges a Chog they own</td><td className="wrapc">Signature verified, <code>ownerOf</code> on Monad matches, nudge recorded (200). A second nudge for the same Chog that day gets 409.</td><td className="wrapc">Automated test with an injected owner. Live check needs a real holder wallet (command below).</td></tr>
+            <tr><td>Non-holder signs a nudge for someone else&apos;s Chog</td><td className="wrapc">Rejected with 403 &quot;This wallet does not own that Chog.&quot; Nothing is stored.</td><td className="wrapc">Automated test and live end-to-end script.</td></tr>
+            <tr><td>Wallet with no Chog opens My Chogs</td><td className="wrapc">&quot;You need a Chog to play&quot;; no Chogs are listed.</td><td className="wrapc">Live script (<code>/api/owned</code>) and screen recording.</td></tr>
+            <tr><td>Forged, expired or stale-day signature; token outside the collection</td><td className="wrapc">401, 401, 409 and 404 respectively.</td><td className="wrapc">Automated tests and live end-to-end script.</td></tr>
+            <tr><td>Sandbox</td><td className="wrapc">Works without a wallet, uses the read-only Chog endpoint, stores nothing, and never touches the leaderboard, badges or season points.</td><td className="wrapc">Live script and code review (no write calls).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p className="muted" style={{ marginTop: 10 }}>Run the live checks yourself:</p>
+      <pre className="code">{`node scripts/test-wallet-paths.mjs
+# optional holder path (records ONE real nudge for a Chog that wallet owns):
+HOLDER_PRIVATE_KEY=0x... node scripts/test-wallet-paths.mjs`}</pre>
+
       <h2>Sample Chogs</h2>
       <div className="grid g3">
         {SAMPLE.map((id) => (

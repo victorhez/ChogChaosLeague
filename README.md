@@ -121,6 +121,7 @@ npm install
 npm run dev        # http://localhost:3000
 npm test           # 15 tests: engine, fairness, real-trait coverage, replay, Merkle, nudge ownership
 npm run typecheck
+node scripts/test-wallet-paths.mjs   # live end-to-end: non-holder rejected, forged/expired signatures, sandbox is separate
 ```
 
 | Variable | Effect |
