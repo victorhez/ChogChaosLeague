@@ -11,3 +11,8 @@ contracts/lib
 
 .vercel
 thumbs*.log
+video/audio
+video/frames
+video/clips
+video/out
+video/music.wav
