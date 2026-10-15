@@ -1,0 +1,82 @@
+  s2 frame 0/367
+  s2 frame 48/367
+  s2 frame 96/367
+  s2 frame 144/367
+  s2 frame 192/367
+  s2 frame 240/367
+  s2 frame 288/367
+  s2 frame 336/367
+✔ s2  15.3s  (367 frames)
+  s3 frame 0/433
+  s3 frame 48/433
+  s3 frame 96/433
+  s3 frame 144/433
+  s3 frame 192/433
+  s3 frame 240/433
+  s3 frame 288/433
+  s3 frame 336/433
+  s3 frame 384/433
+  s3 frame 432/433
+✔ s3  18.0s  (433 frames)
+  s4 frame 0/478
+  s4 frame 48/478
+  s4 frame 96/478
+  s4 frame 144/478
+  s4 frame 192/478
+  s4 frame 240/478
+  s4 frame 288/478
+  s4 frame 336/478
+  s4 frame 384/478
+  s4 frame 432/478
+✔ s4  19.9s  (478 frames)
+  s5 frame 0/244
+  s5 frame 48/244
+  s5 frame 96/244
+  s5 frame 144/244
+  s5 frame 192/244
+  s5 frame 240/244
+✔ s5  10.2s  (244 frames)
+  s6 frame 0/410
+  s6 frame 48/410
+  s6 frame 96/410
+  s6 frame 144/410
+  s6 frame 192/410
+  s6 frame 240/410
+  s6 frame 288/410
+  s6 frame 336/410
+  s6 frame 384/410
+✔ s6  17.1s  (410 frames)
+  s7 frame 0/238
+  s7 frame 48/238
+  s7 frame 96/238
+  s7 frame 144/238
+  s7 frame 192/238
+✔ s7  9.9s  (238 frames)
+  s8 frame 0/396
+  s8 frame 48/396
+  s8 frame 96/396
+  s8 frame 144/396
+  s8 frame 192/396
+  s8 frame 240/396
+  s8 frame 288/396
+  s8 frame 336/396
+  s8 frame 384/396
+✔ s8  16.5s  (396 frames)
+  s9 frame 0/285
+  s9 frame 48/285
+  s9 frame 96/285
+  s9 frame 144/285
+  s9 frame 192/285
+  s9 frame 240/285
+✔ s9  11.9s  (285 frames)
+  s10 frame 0/477
+  s10 frame 48/477
+  s10 frame 96/477
+  s10 frame 144/477
+  s10 frame 192/477
+  s10 frame 240/477
+  s10 frame 288/477
+  s10 frame 336/477
+  s10 frame 384/477
+  s10 frame 432/477
+✔ s10  19.9s  (477 frames)

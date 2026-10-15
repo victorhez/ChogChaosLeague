@@ -1,0 +1,27 @@
+  s7 frame 0/238
+  s7 frame 48/238
+  s7 frame 96/238
+  s7 frame 144/238
+  s7 frame 192/238
+✔ s7  9.9s  (238 frames)
+  s8 frame 0/396
+  s8 frame 48/396
+  s8 frame 96/396
+  s8 frame 144/396
+  s8 frame 192/396
+  s8 frame 240/396
+  s8 frame 288/396
+  s8 frame 336/396
+  s8 frame 384/396
+✔ s8  16.5s  (396 frames)
+  s9 frame 0/285
+  s9 frame 48/285
+  s9 frame 96/285
+  s9 frame 144/285
+  s9 frame 192/285
+  s9 frame 240/285
+✔ s9  11.9s  (285 frames)
+  s10 frame 0/477
+  s10 frame 48/477
+  s10 frame 96/477
+  s10 frame 144/477

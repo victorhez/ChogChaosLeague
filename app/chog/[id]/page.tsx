@@ -52,7 +52,7 @@ export default async function ChogPage({ params }: { params: Promise<{ id: strin
           <div style={{ textAlign: "left" }}><GeneBars genome={chog.genome} /></div>
           <a className="muted" style={{ textDecoration: "underline", fontSize: ".85rem", display: "inline-block", marginTop: 12 }} href={`${CHAIN.explorer}/token/${CHOG_CONTRACT}?a=${tokenId}`} target="_blank" rel="noreferrer">View token on Monadscan</a>
         </div>
-        <div style={{ display: "grid", gap: 18 }}>
+        <div style={{ display: "grid", gap: 18, minWidth: 0, gridTemplateColumns: "minmax(0, 1fr)" }}>
           <div className="card">
             <h3>Traits become genes</h3>
             <p className="muted" style={{ margin: "6px 0 14px" }}>Each real trait adds to the genome through the public mapping table. Rare values are marked ★. Every gene&apos;s trait bonus is capped, so no single trait decides a match.</p>
