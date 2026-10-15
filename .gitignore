@@ -16,3 +16,5 @@ video/frames
 video/clips
 video/out
 video/music.wav
+video/*.log
+video/tests-output.txt
