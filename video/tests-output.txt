@@ -1,0 +1,18 @@
+ok - collection covers token ids 1..1969 with traits
+ok - every real trait value maps through the table (no fallback)
+ok - genomes are deterministic, bounded, and the trait bonus is capped
+ok - same input and seed give an identical result and log hash
+ok - a different seed changes the log hash
+ok - no single gene weight exceeds 0.4 and weights sum to 1
+ok - a weaker Chog still wins sometimes (common Chogs stay competitive)
+ok - full-roster pairing is deterministic and covers each Chog at most once
+ok - replay from stored inputs reproduces a full-roster round
+ok - merkle proofs verify for every leaf and fail when tampered
+ok - precomputed history matches a fresh recompute (rounds 0, 77, 167)
+ok - nudge: the on-chain owner is accepted
+ok - nudge: a wallet that does not own the Chog is rejected (403), even with a valid signature
+ok - nudge: a signature for another wallet is rejected (401)
+ok - nudge: expired signatures, locked rounds and stale days are rejected
+ok - nudge: tokens outside the collection are rejected
+
+16 tests passed

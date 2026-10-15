@@ -14,21 +14,24 @@ export const maxDuration = 30;
 
 const GATEWAYS = ["https://ipfs.filebase.io/ipfs/", "https://4everland.io/ipfs/", "https://gateway.pinata.cloud/ipfs/"];
 
-/** Real Chog art as a PNG data URI (the card renderer cannot read webp). Null if no gateway answers in time. */
-async function realArt(id: number, px: number): Promise<string | null> {
+/** Real Chog art as a PNG data URI (the card renderer cannot read webp). Races the gateways; falls back to the saved thumbnail. */
+async function realArt(id: number, px: number, origin: string): Promise<string | null> {
   const path = imagePath(id);
   if (!path) return null;
-  for (let i = 0; i < GATEWAYS.length; i++) {
-    try {
-      const res = await fetch(GATEWAYS[(id + i) % GATEWAYS.length] + path, { signal: AbortSignal.timeout(5000) });
-      if (!res.ok) continue;
-      const png = await sharp(Buffer.from(await res.arrayBuffer())).resize(px, px, { fit: "cover" }).png().toBuffer();
-      return "data:image/png;base64," + png.toString("base64");
-    } catch {
-      /* next gateway */
-    }
+  const grab = async (url: string, ms: number) => {
+    const res = await fetch(url, { signal: AbortSignal.timeout(ms) });
+    if (!res.ok) throw new Error("bad status");
+    return Buffer.from(await res.arrayBuffer());
+  };
+  let raw: Buffer | null = null;
+  try {
+    raw = await Promise.any(GATEWAYS.map((g) => grab(g + path, 7000)));
+  } catch {
+    try { raw = await grab(`${origin}/chogs/${id}.webp`, 4000); } catch { /* pixel avatar fallback */ }
   }
-  return null;
+  if (!raw) return null;
+  const png = await sharp(raw).resize(px, px, { fit: "cover" }).png().toBuffer();
+  return "data:image/png;base64," + png.toString("base64");
 }
 
 export async function GET(req: Request, { params }: { params: Promise<{ eventId: string }> }) {
@@ -40,7 +43,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ eventId:
   const [A, B] = await Promise.all([getChog(e.a.tokenId), getChog(e.b.tokenId)]);
   const input = { type: e.type, seedHash: e.seed.hash, eventId: e.eventId, a: e.a, b: e.b };
   const nar = narrate(input, e.result, { a: A.name, b: B.name });
-  const [artA, artB] = await Promise.all([realArt(e.a.tokenId, 240), realArt(e.b.tokenId, 240)]);
+  const [artA, artB] = await Promise.all([realArt(e.a.tokenId, 240, new URL(req.url).origin), realArt(e.b.tokenId, 240, new URL(req.url).origin)]);
   const winner = e.result.winner === "a" ? A : e.result.winner === "b" ? B : null;
 
   const Side = ({ c, won, art }: { c: typeof A; won: boolean; art: string | null }) => (
