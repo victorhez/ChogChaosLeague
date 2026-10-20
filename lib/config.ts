@@ -36,5 +36,6 @@ export const lastClosedRound = (latest: number) => Math.floor((latest - FINALITY
 
 /** Transactions that wrote each season root to ChaosLedger on Monad, so a Verified badge can link to the proof of anchoring. */
 export const ANCHOR_TXS: Record<number, string> = {
-  0: "0x7915194a0a68213e3433f90650fa991df27c244a977fda9fdf4635bd2249f546",
+  0: "0x310342a0801e554dd8b5e9bc4f007d1ab478c0848e188ab02872b0e996278433",
+  1: "0xaf7eb6b2354837c0878182eb65b93921edc3da5177fc8138d76840c3d33109e1",
 };

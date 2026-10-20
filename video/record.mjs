@@ -128,7 +128,7 @@ const endHTML = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style
 <div class="wrap"><img class="wm" src="${SITE}/wordmark.png">
 <div class="roles"><div class="role" style="background:#00f5ff">Character</div><div class="role" style="background:#FF8A3D">Key</div><div class="role" style="background:#a6ff00">Memory</div></div>
 <div class="url">chog-chaos-league.vercel.app</div>
-<div class="meta">github.com/victorhez/ChogChaosLeague<br>ChaosLedger on Monad · 0xa379…5143 · Built for Chogathon 2026</div>
+<div class="meta">github.com/victorhez/ChogChaosLeague<br>ChaosLedger on Monad · 0x2951…b14e · Built for Chogathon 2026</div>
 <div class="chogs">${[1049, 7, 541, 1557, 25, 888, 1969].map((i) => `<img src="${SITE}/chogs/${i}.webp">`).join("")}</div></div>
 </body></html>`;
 
@@ -259,7 +259,7 @@ const scenes = [
     await c.at(1.8); await scrollToText(p, "Career record", 110, 1600);
     await c.at(3.6); await p.evaluate(() => new Promise((res) => { const w = [...document.querySelectorAll(".tbl-wrap")].find((e) => e.textContent.includes("Proof")); if (!w) return res(); const s0 = w.scrollLeft, d = w.scrollWidth - w.clientWidth - s0, t0 = performance.now(); const f = (t) => { const q = Math.min(1, (t - t0) / 1400), e = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2; w.scrollLeft = s0 + d * e; q < 1 ? requestAnimationFrame(f) : res(); }; requestAnimationFrame(f); }));
     await c.at(5.4); const b = await center(p, "td a.pill-mint"); if (b) { await glide(p, b.x, b.y, 1200); await p.evaluate(() => window.__demo.pulse("td a.pill-mint")); }
-    await c.at(9.0); await c.tag("ChaosLedger 0xa379…5143 · anchored tx 0x7915…f546");
+    await c.at(9.0); await c.tag("ChaosLedger 0x2951…b14e · season roots anchored on Monad");
     await c.at(13.0); await p.evaluate(() => window.__demo.pulse(null));
   } },
 

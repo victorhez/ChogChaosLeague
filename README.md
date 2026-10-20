@@ -150,7 +150,8 @@ Use a fresh wallet funded with a little MON. Then set `NEXT_PUBLIC_LEDGER_ADDRES
 
 ## Honest limits
 
-- **Ledger.** ChaosLedger is deployed on Monad at [`0xa379…5143`](https://monadscan.com/address/0xa37942e9963d7e036f2b9e6d15c1597541c05143) and season 0 (replayed history) is anchored: its root `0x2f388a7f…bb5be2` is on chain and profiles show **Verified on Monad**. Season 1 is anchored once its 168 live rounds close, and until then it shows "Season live · proof valid".
+- **Ledger.** ChaosLedger v2 is deployed on Monad at [`0x2951…b14e`](https://monadscan.com/address/0x295136c6e48f7b56b59734f1d9d9c8e5bb0db14e). Season 0 (replayed history, root `0x2f388a7f…bb5be2`) and season 1 (the first live season, root `0x2fec3383…4a0183`) are both anchored, and profiles show **Verified on Monad**. Each later season is anchored once its 168 rounds close; until then it shows "Season live · proof valid".
+- **Why v2.** The first ledger (`0xa379…5143`) had season 0 anchored correctly, but its season 1 slot received a root computed while some seed block hashes could not be fetched and placeholders were used. A contract slot can be written only once, so I fixed the cause (the league now only ever uses real Monad hashes, and tests pin both roots), redeployed, and re-anchored both seasons. The first contract is superseded and unused.
 - **Nudges.** Nudges are durable only when Redis is connected; the status page reports the live mode truthfully.
 - **Autopilot.** Chogs whose holders never nudge play on seeded autopilot stances. Holders change stance for a day; they do not control results.
 - **Metadata.** Traits and names come from the collection's cached IPFS metadata. The number in a name (for example CHOG #541) is not the token id.
