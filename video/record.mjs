@@ -117,8 +117,8 @@ const terminalHTML = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<
 </body></html>`;
 
 const endHTML = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>html{zoom:.8}${BASE_CSS}
-.wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:30px;padding-bottom:230px}
-.wm{width:560px;border-radius:30px;opacity:0;transform:scale(.85)}body.go .wm{animation:in .9s .1s cubic-bezier(.2,1.2,.4,1) forwards}
+.wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:24px;padding-bottom:120px}
+.wm{width:440px;border-radius:30px;opacity:0;transform:scale(.85)}body.go .wm{animation:in .9s .1s cubic-bezier(.2,1.2,.4,1) forwards}
 .roles{display:flex;gap:26px;opacity:0}body.go .roles{animation:in .8s 1.2s forwards}
 .role{padding:18px 40px;border-radius:999px;font:400 40px 'Bowlby One',sans-serif;text-transform:uppercase;color:#0E091C}
 .url{font:400 74px 'Bowlby One',sans-serif;color:#F5F3FF;opacity:0}body.go .url{animation:in .8s 2.2s forwards}
