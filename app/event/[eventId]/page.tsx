@@ -25,6 +25,21 @@ export default async function EventPage({ params }: { params: Promise<{ eventId:
   const { eventId } = await params;
   const st = await eventStatus(eventId);
   if (st.kind === "invalid") notFound();
+  if (st.kind === "unavailable") {
+    return (
+      <div className="wrap" style={{ padding: "60px 0 90px", maxWidth: 760 }}>
+        <Link href="/arena" className="muted">← Arena</Link>
+        <div className="card card-hard" style={{ marginTop: 24 }}>
+          <div className="eyebrow">Round {st.roundId}</div>
+          <h1 style={{ fontSize: "clamp(2rem,6vw,3.2rem)", margin: "8px 0 14px" }}>Seed not retrieved yet</h1>
+          <p className="muted">This round is closed, but its Monad seed block hash could not be read just now. The league never substitutes a placeholder seed, so the event is shown only once the real hash is available. Please try again in a moment.</p>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22 }}>
+            <Link className="btn btn-primary" href="/arena">Back to the arena</Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (st.kind === "future") {
     return (
       <div className="wrap" style={{ padding: "60px 0 90px", maxWidth: 760 }}>

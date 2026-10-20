@@ -8,7 +8,7 @@ import { buildTree, leafHash, proofFor, type LeafData, type MerkleTree } from ".
 import snapshot from "../seeds.json";
 import history from "../history.json";
 import { allChogs } from "./collection";
-import { loadNudges, nudgeKey, type NudgeBook } from "./nudges";
+import { kvGetSeeds, kvSetSeeds, loadNudges, nudgeKey, type NudgeBook } from "./nudges";
 
 export interface Seed { block: number; hash: string; source: "monad" | "fallback" }
 
@@ -61,32 +61,45 @@ export async function getHead(): Promise<Head> {
   }
 }
 
+/** Test helper only. The running app never uses placeholder seeds: a round without a real Monad seed is simply not available. */
 export const fallbackSeed = (round: number): Seed => ({ block: roundSeedBlock(round), hash: keccakHex(`chog-chaos-league:fallback:${round}`), source: "fallback" });
 
 const seedMem = new Map<number, Seed>(
   Object.entries(snapshot as Record<string, string>).map(([r, hash]) => [Number(r), { block: roundSeedBlock(Number(r)), hash, source: "monad" as const }]),
 );
 
+/**
+ * Seed block hashes for the given (closed) rounds, from: the shipped snapshot, the shared store, then Monad RPC with retries.
+ * Rounds whose seed could not be read are ABSENT from the result; callers must treat them as not available, never guess.
+ */
 export async function getSeeds(rounds: number[]): Promise<Map<number, Seed>> {
-  const need = rounds.filter((r) => !seedMem.has(r));
+  let need = rounds.filter((r) => !seedMem.has(r));
   if (need.length) {
+    const shared = await kvGetSeeds(need);
+    for (const [r, hash] of shared) seedMem.set(r, { block: roundSeedBlock(r), hash, source: "monad" });
+    need = need.filter((r) => !seedMem.has(r));
+  }
+  const fetched = new Map<number, string>();
+  for (let attempt = 0; need.length && attempt < 4; attempt++) {
     try {
       const batch = need.map((r, i) => ({ jsonrpc: "2.0", id: i, method: "eth_getBlockByNumber", params: ["0x" + roundSeedBlock(r).toString(16), false] }));
       for (let i = 0; i < batch.length; i += 25) {
-        const slice = batch.slice(i, i + 25);
-        const res = await rpcCall<{ id: number; result?: { hash: string } }[]>(slice, false);
+        const res = await rpcCall<{ id: number; result?: { hash: string } }[]>(batch.slice(i, i + 25), false);
         if (!Array.isArray(res)) continue;
         for (const item of res) {
           const r = need[item.id];
-          if (item.result?.hash) seedMem.set(r, { block: roundSeedBlock(r), hash: item.result.hash, source: "monad" });
+          if (item.result?.hash) { seedMem.set(r, { block: roundSeedBlock(r), hash: item.result.hash, source: "monad" }); fetched.set(r, item.result.hash); }
         }
       }
     } catch {
-      /* fall through to fallback seeds below */
+      /* retry below */
     }
+    need = need.filter((r) => !seedMem.has(r));
+    if (need.length) await new Promise((res) => setTimeout(res, 500 * (attempt + 1)));
   }
+  if (fetched.size) await kvSetSeeds(fetched);
   const out = new Map<number, Seed>();
-  for (const r of rounds) out.set(r, seedMem.get(r) ?? fallbackSeed(r));
+  for (const r of rounds) { const s = seedMem.get(r); if (s) out.set(r, s); }
   return out;
 }
 
@@ -165,7 +178,8 @@ export function leagueState(head: Head): LeagueState {
 export async function recentRounds(latestClosed: number, count: number, roster: Chog[], nudges: NudgeBook) {
   const ids = Array.from({ length: count }, (_, i) => latestClosed - i).filter((r) => r >= 0);
   const seeds = await getSeeds(ids);
-  return ids.map((r) => ({ roundId: r, seed: seeds.get(r)!, events: eventsForRound(r, seeds.get(r)!, roster, nudges) }));
+  // a round whose seed could not be read is skipped, never faked
+  return ids.filter((r) => seeds.has(r)).map((r) => ({ roundId: r, seed: seeds.get(r)!, events: eventsForRound(r, seeds.get(r)!, roster, nudges) }));
 }
 
 export interface Standing {
@@ -251,13 +265,18 @@ export function aggregate(roundId: number, seed: Seed, roster: Chog[], nudges: N
 export async function computeSeason(seasonId: number, latestClosed: number, roster: Chog[], nudges: NudgeBook): Promise<SeasonResult> {
   const first = seasonId * ROUNDS_PER_SEASON;
   const last = Math.min(first + ROUNDS_PER_SEASON - 1, latestClosed);
-  const complete = last === first + ROUNDS_PER_SEASON - 1;
   const memKey = `${seasonId}:${last}:${Object.keys(nudges).length}`;
   const hit = seasonMem.get(memKey);
   if (hit) return hit;
 
-  const rounds = last >= first ? Array.from({ length: last - first + 1 }, (_, i) => first + i) : [];
-  const seeds = await getSeeds(rounds);
+  const all = last >= first ? Array.from({ length: last - first + 1 }, (_, i) => first + i) : [];
+  const seeds = await getSeeds(all);
+  // Only rounds whose seed block hash was really read from Monad count. If a seed could not be retrieved, the season stops at
+  // the last round before it (and is not complete), so a standing or root can never depend on a placeholder seed.
+  let known = 0;
+  while (known < all.length && seeds.has(all[known])) known++;
+  const rounds = all.slice(0, known);
+  const complete = rounds.length === ROUNDS_PER_SEASON;
   const n = roster.length;
   const st: Standing[] = roster.map((c) => ({ tokenId: c.tokenId, points: 0, wins: 0, losses: 0, draws: 0, streak: 0, bestStreak: 0, upsets: 0, betrayals: 0, events: 0, rank: 0, badges: [] }));
   let best: (SeasonResult["best"] & { points: number }) | null = null;
@@ -296,8 +315,10 @@ export async function computeSeason(seasonId: number, latestClosed: number, rost
   const historyRounds = rounds.filter((r) => r < LIVE_FROM_ROUND).length;
   const result: SeasonResult = { seasonId, complete, rounds: rounds.length, history: rounds.length > 0 && historyRounds === rounds.length, historyRounds, standings, root: tree.root, best };
   treeMem.set(result, tree);
-  if (seasonMem.size > 8) seasonMem.delete(seasonMem.keys().next().value as string);
-  seasonMem.set(memKey, result);
+  if (rounds.length === all.length) { // only cache a result that used every round it should have
+    if (seasonMem.size > 8) seasonMem.delete(seasonMem.keys().next().value as string);
+    seasonMem.set(memKey, result);
+  }
   return result;
 }
 
@@ -321,7 +342,8 @@ export async function loadEvent(eventId: string) {
   const roundId = Number(m[1]);
   const { state, roster, nudges } = await loadLeague();
   if (roundId > state.latestClosed) return null;
-  const seed = (await getSeeds([roundId])).get(roundId)!;
+  const seed = (await getSeeds([roundId])).get(roundId);
+  if (!seed) return null; // the seed block hash could not be read from Monad: nothing to show
   const by = indexOf(roster);
   const p = planRound(seed.hash, roundId, roster.map((c) => c.tokenId)).find((x) => x.eventId === eventId);
   if (!p) return null;
@@ -330,6 +352,7 @@ export async function loadEvent(eventId: string) {
 
 export type EventStatus =
   | { kind: "invalid" }
+  | { kind: "unavailable"; roundId: number }
   | { kind: "future"; roundId: number; seedBlock: number; head: number; blocksLeft: number; secondsLeft: number; latestClosed: number }
   | ({ kind: "ok" } & NonNullable<Awaited<ReturnType<typeof loadEvent>>>);
 
@@ -344,6 +367,8 @@ export async function eventStatus(eventId: string): Promise<EventStatus> {
     const blocksLeft = Math.max(0, seedBlock + FINALITY_BLOCKS - state.head.latest);
     return { kind: "future", roundId, seedBlock, head: state.head.latest, blocksLeft, secondsLeft: Math.round(blocksLeft * BLOCK_SECONDS), latestClosed: state.latestClosed };
   }
+  const seed = (await getSeeds([roundId])).get(roundId);
+  if (!seed) return { kind: "unavailable", roundId }; // closed on chain, but its seed hash could not be read right now
   const found = await loadEvent(eventId);
   return found ? { kind: "ok", ...found } : { kind: "invalid" };
 }
@@ -358,7 +383,8 @@ export async function tokenEvents(tokenId: number, seasonId: number, latestClose
   const ids = roster.map((c) => c.tokenId);
   const out: EventRecord[] = [];
   for (const r of rounds) {
-    const seed = seeds.get(r)!;
+    const seed = seeds.get(r);
+    if (!seed) continue;
     const p = planRound(seed.hash, r, ids).find((x) => x.a === tokenId || x.b === tokenId);
     if (p) out.push(playPairing(r, seed, p, by, nudges, true));
   }

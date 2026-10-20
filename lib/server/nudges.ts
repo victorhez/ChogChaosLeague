@@ -73,3 +73,27 @@ export async function saveNudge(n: NudgeRecord): Promise<boolean> {
   mem[key] = n;
   return true;
 }
+
+const SEEDS_KEY = "ccl:seeds";
+
+/** Seed block hashes already read from Monad by any instance (shared, so every instance agrees on every round). */
+export async function kvGetSeeds(rounds: number[]): Promise<Map<number, string>> {
+  const out = new Map<number, string>();
+  if (!(REST_URL && REST_TOKEN) || !rounds.length) return out;
+  try {
+    const vals = (await rest(["HMGET", SEEDS_KEY, ...rounds.map(String)])) as (string | null)[];
+    vals.forEach((v, i) => { if (v && /^0x[0-9a-fA-F]{64}$/.test(v)) out.set(rounds[i], v); });
+  } catch {
+    /* the store is only a cache; Monad RPC is the source */
+  }
+  return out;
+}
+
+export async function kvSetSeeds(seeds: Map<number, string>): Promise<void> {
+  if (!(REST_URL && REST_TOKEN) || !seeds.size) return;
+  try {
+    await rest(["HSET", SEEDS_KEY, ...[...seeds].flatMap(([r, h]) => [String(r), h])]);
+  } catch {
+    /* best effort */
+  }
+}

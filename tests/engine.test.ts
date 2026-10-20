@@ -7,7 +7,7 @@ import { EVENT_TYPES, GENES } from "../lib/engine/types";
 import { decodeGenome, isKnownTrait, MAPPING_CAP } from "../lib/genome/genome";
 import { buildTree, leafHash, proofFor, verifyProof } from "../lib/merkle";
 import { allChogs, collectionChog, inCollection, TOKEN_IDS } from "../lib/server/collection";
-import { aggregate, encodeAgg, eventStatus, eventsForRound, fallbackSeed, getRoster, getSeeds } from "../lib/server/league";
+import { aggregate, computeSeason, encodeAgg, eventStatus, eventsForRound, fallbackSeed, getRoster, getSeeds } from "../lib/server/league";
 import history from "../lib/history.json";
 import { checkNudge } from "../lib/server/nudge-check";
 import { nudgeMessage } from "../lib/nudge-shared";
@@ -123,6 +123,22 @@ test("event status: a closed round is playable, a future round is 'not played ye
   }
   assert.equal((await eventStatus("not-an-event")).kind, "invalid");
   assert.equal((await eventStatus("r168-e99999")).kind, "invalid");
+});
+
+test("seeds are always real Monad hashes: never a placeholder, for every snapshotted round", async () => {
+  const rounds = Array.from({ length: 395 }, (_, i) => i);
+  const seeds = await getSeeds(rounds);
+  assert.equal(seeds.size, rounds.length, "every closed round in the snapshot has a seed");
+  for (const sd of seeds.values()) assert.equal(sd.source, "monad");
+});
+
+test("season roots are deterministic and pinned (regression guard for anything that changes results)", async () => {
+  const roster = await getRoster();
+  const s0 = await computeSeason(0, 1000, roster, {});
+  const s1 = await computeSeason(1, 1000, roster, {});
+  assert.equal(s0.root, "0x2f388a7fce39fc6335356594956a78747555db375dca702fa7cf6b4544bb5be2"); // anchored on Monad
+  assert.equal(s1.root, "0x2fec33831c4241faef00cd54e0cb80a114945d52f6f676b1a7d6acf6d54a0183");
+  assert.ok(s0.complete && s1.complete);
 });
 
 // ---- nudge ownership ----

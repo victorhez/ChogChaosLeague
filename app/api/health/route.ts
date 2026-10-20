@@ -9,10 +9,10 @@ export async function GET() {
   const t0 = Date.now();
   const head = await getHead();
   const st = leagueState(head);
-  const seed = (await getSeeds([st.latestClosed])).get(st.latestClosed)!;
+  const seed = (await getSeeds([st.latestClosed])).get(st.latestClosed);
   const roster = await getRoster();
   return NextResponse.json({
-    ok: head.ok && seed.source === "monad",
+    ok: head.ok && Boolean(seed),
     rpc: head.ok ? "up" : "down (running on fallback seeds)",
     latestBlock: head.latest,
     latestClosedRound: st.latestClosed,

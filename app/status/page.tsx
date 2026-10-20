@@ -11,13 +11,13 @@ export default async function Status() {
   const t0 = Date.now();
   const head = await getHead();
   const st = leagueState(head);
-  const seed = (await getSeeds([st.latestClosed])).get(st.latestClosed)!;
+  const seed = (await getSeeds([st.latestClosed])).get(st.latestClosed);
   const roster = await getRoster();
   const store = await nudgeStoreHealth();
   const rows: [string, string, boolean][] = [
     ["Monad RPC", head.ok ? `up · head block ${head.latest.toLocaleString("en-US")}` : "unreachable · running on fallback seeds", head.ok],
     ["Latest closed round", `${st.latestClosed} (season ${st.season})`, true],
-    ["Last seed", `${seed.hash.slice(0, 18)}… · block ${seed.block.toLocaleString("en-US")} · ${seed.source}`, seed.source === "monad"],
+    ["Last seed", seed ? `${seed.hash.slice(0, 18)}… · block ${seed.block.toLocaleString("en-US")} · read from Monad` : "latest seed not retrieved yet (no placeholder is ever used)", Boolean(seed)],
     ["Next nudge lock", `${Math.round(st.secondsToLock / 60)} min`, true],
     ["Roster", `${roster.length} of ${COLLECTION_SIZE} Chogs · read from the Chog Genesis metadata (${CHOG_CONTRACT.slice(0, 10)}…)`, roster.length === COLLECTION_SIZE],
     ["League phase", st.latestClosed < LIVE_FROM_ROUND ? "replaying history · first live round pending" : `live · ${st.liveRoundsClosed} live rounds closed`, true],
