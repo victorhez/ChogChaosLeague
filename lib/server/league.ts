@@ -335,7 +335,7 @@ export type EventStatus =
 
 /** Resolves an event id to: played (ok), not played yet (future), or malformed (invalid). */
 export async function eventStatus(eventId: string): Promise<EventStatus> {
-  const m = /^r(d{1,7})-e(d{1,4})$/.exec(eventId);
+  const m = /^r(\d{1,7})-e(\d{1,4})$/.exec(eventId);
   if (!m) return { kind: "invalid" };
   const roundId = Number(m[1]);
   const { state } = await loadLeague();

@@ -7,7 +7,7 @@ import { EVENT_TYPES, GENES } from "../lib/engine/types";
 import { decodeGenome, isKnownTrait, MAPPING_CAP } from "../lib/genome/genome";
 import { buildTree, leafHash, proofFor, verifyProof } from "../lib/merkle";
 import { allChogs, collectionChog, inCollection, TOKEN_IDS } from "../lib/server/collection";
-import { aggregate, encodeAgg, eventsForRound, fallbackSeed, getRoster, getSeeds } from "../lib/server/league";
+import { aggregate, encodeAgg, eventStatus, eventsForRound, fallbackSeed, getRoster, getSeeds } from "../lib/server/league";
 import history from "../lib/history.json";
 import { checkNudge } from "../lib/server/nudge-check";
 import { nudgeMessage } from "../lib/nudge-shared";
@@ -110,6 +110,19 @@ test("precomputed history matches a fresh recompute (rounds 0, 77, 167)", async 
   } finally {
     delete process.env.CCL_NO_HISTORY;
   }
+});
+
+test("event status: a closed round is playable, a future round is 'not played yet', garbage is invalid", async () => {
+  const closed = await eventStatus("r168-e3");
+  assert.equal(closed.kind, "ok");
+  const future = await eventStatus("r999999-e0");
+  assert.equal(future.kind, "future");
+  if (future.kind === "future") {
+    assert.ok(future.seedBlock > future.head, "a future round's seed block must be beyond the chain head");
+    assert.ok(future.blocksLeft > 0);
+  }
+  assert.equal((await eventStatus("not-an-event")).kind, "invalid");
+  assert.equal((await eventStatus("r168-e99999")).kind, "invalid");
 });
 
 // ---- nudge ownership ----
