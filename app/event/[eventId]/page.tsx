@@ -6,22 +6,43 @@ import { isHistory } from "@/lib/config";
 import { ReplayPanel } from "@/components/ReplayPanel";
 import { ShareButtons } from "@/components/ShareButtons";
 import { chogName } from "@/lib/chog";
-import { loadEvent } from "@/lib/server/league";
+import { eventStatus } from "@/lib/server/league";
+import { fmtDuration } from "@/lib/server/view";
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ eventId: string }> }): Promise<Metadata> {
   const { eventId } = await params;
-  const f = await loadEvent(eventId);
-  if (!f) return { title: "Event not found" };
+  const st = await eventStatus(eventId);
+  if (st.kind === "future") return { title: `Round ${st.roundId} not played yet`, robots: { index: false } };
+  if (st.kind !== "ok") return { title: "Event not found" };
+  const f = st;
   const t = `${chogName(f.event.a.tokenId)} vs ${chogName(f.event.b.tokenId)} · ${EVENT_LABEL[f.event.type]}`;
   return { title: t, description: "Replay this Chog Chaos League event and verify the result yourself.", openGraph: { title: t, images: [`/api/card/${eventId}`] }, twitter: { card: "summary_large_image", images: [`/api/card/${eventId}`] } };
 }
 
 export default async function EventPage({ params }: { params: Promise<{ eventId: string }> }) {
   const { eventId } = await params;
-  const f = await loadEvent(eventId);
-  if (!f) notFound();
+  const st = await eventStatus(eventId);
+  if (st.kind === "invalid") notFound();
+  if (st.kind === "future") {
+    return (
+      <div className="wrap" style={{ padding: "60px 0 90px", maxWidth: 760 }}>
+        <Link href="/arena" className="muted">← Arena</Link>
+        <div className="card card-hard" style={{ marginTop: 24 }}>
+          <div className="eyebrow">Round {st.roundId}</div>
+          <h1 style={{ fontSize: "clamp(2rem,6vw,3.4rem)", margin: "8px 0 14px" }}>Not played yet</h1>
+          <p className="muted">This round is seeded by Monad block <b className="mono" style={{ color: "var(--cloud)" }}>#{st.seedBlock.toLocaleString("en-US")}</b>, which does not exist yet (the chain is at #{st.head.toLocaleString("en-US")}). Nothing about it can be known or replayed until that block is produced and final.</p>
+          <p className="muted" style={{ marginTop: 10 }}>It closes in about <b style={{ color: "var(--cloud)" }}>{fmtDuration(st.secondsLeft)}</b>. The latest round you can replay is round {st.latestClosed}.</p>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22 }}>
+            <Link className="btn btn-primary" href={`/event/r${st.latestClosed}-e0`}>Open the latest played round</Link>
+            <Link className="btn btn-ghost" href="/arena">Back to the arena</Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  const f = st;
   const e = f.event;
   const a = chogName(e.a.tokenId), b = chogName(e.b.tokenId);
   const winner = e.result.winner === "a" ? a : e.result.winner === "b" ? b : null;

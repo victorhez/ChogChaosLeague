@@ -6,7 +6,7 @@ import { COLLECTION_SIZE, CHOG_CONTRACT, LIVE_FROM_ROUND, isHistory } from "@/li
 import { loadLeague, recentRounds } from "@/lib/server/league";
 
 export const metadata: Metadata = { title: "Testing guide" };
-export const revalidate = 30;
+export const dynamic = "force-dynamic";
 
 const SAMPLE = [1, 7, 541, 1049, 1557, 1969];
 

@@ -46,18 +46,18 @@ async function rpcCall<T>(body: unknown, revalidate: number | false): Promise<T>
 
 export interface Head { latest: number; ok: boolean; checkedAt: number }
 
-/** Last head we saw (or a known point), used to keep the clock moving if RPC is down. */
-let lastHead = { block: 113_026_364, at: Date.parse("2026-10-13T16:15:17Z") };
+/** Highest head block we have actually observed from Monad (or a known real point). Never extrapolated forward. */
+let lastHead = { block: 113_026_364 };
 
 export async function getHead(): Promise<Head> {
   try {
     const r = await rpcCall<{ result: string }>({ jsonrpc: "2.0", id: 1, method: "eth_blockNumber", params: [] }, 4);
     const latest = parseInt(r.result, 16);
-    lastHead = { block: latest, at: Date.now() };
+    if (latest > lastHead.block) lastHead = { block: latest };
     return { latest, ok: true, checkedAt: Date.now() };
   } catch {
-    const est = lastHead.block + Math.floor((Date.now() - lastHead.at) / 1000 / BLOCK_SECONDS);
-    return { latest: est, ok: false, checkedAt: Date.now() };
+    // RPC unreachable: do NOT guess a newer head. Rounds only count as closed if their seed block was really observed.
+    return { latest: lastHead.block, ok: false, checkedAt: Date.now() };
   }
 }
 
@@ -326,6 +326,26 @@ export async function loadEvent(eventId: string) {
   const p = planRound(seed.hash, roundId, roster.map((c) => c.tokenId)).find((x) => x.eventId === eventId);
   if (!p) return null;
   return { event: playPairing(roundId, seed, p, by, nudges, true), state, roster };
+}
+
+export type EventStatus =
+  | { kind: "invalid" }
+  | { kind: "future"; roundId: number; seedBlock: number; head: number; blocksLeft: number; secondsLeft: number; latestClosed: number }
+  | ({ kind: "ok" } & NonNullable<Awaited<ReturnType<typeof loadEvent>>>);
+
+/** Resolves an event id to: played (ok), not played yet (future), or malformed (invalid). */
+export async function eventStatus(eventId: string): Promise<EventStatus> {
+  const m = /^r(d{1,7})-e(d{1,4})$/.exec(eventId);
+  if (!m) return { kind: "invalid" };
+  const roundId = Number(m[1]);
+  const { state } = await loadLeague();
+  if (roundId > state.latestClosed) {
+    const seedBlock = roundSeedBlock(roundId);
+    const blocksLeft = Math.max(0, seedBlock + FINALITY_BLOCKS - state.head.latest);
+    return { kind: "future", roundId, seedBlock, head: state.head.latest, blocksLeft, secondsLeft: Math.round(blocksLeft * BLOCK_SECONDS), latestClosed: state.latestClosed };
+  }
+  const found = await loadEvent(eventId);
+  return found ? { kind: "ok", ...found } : { kind: "invalid" };
 }
 
 /** Events a token played in a season, newest first. Runs only that token's pairing in each round. */
